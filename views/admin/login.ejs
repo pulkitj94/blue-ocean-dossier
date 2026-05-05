@@ -1,52 +1,29 @@
+cat > views/admin/login.ejs << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blue Ocean AI Dossier — Art of the Impossible</title>
+  <title>Admin — Blue Ocean</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
 </head>
-<body class="login-page">
-  <div class="login-wrap">
-    <div class="login-brand">
-      <div>
-        <div class="brand-mark">YPO Blue Ocean <span class="brand-line"></span></div>
-        <h1 class="brand-headline">The Art<br/>of the <em>Impossible</em></h1>
-        <p class="brand-sub">A private AI dossier prepared for members. From pre-assessment to ninety-day plan, threaded into a single confidential record.</p>
-      </div>
-      <div class="brand-meta">
-        <span>Gurgaon · 18 July 2026</span>
-        <span>Dossier System v1</span>
-      </div>
-    </div>
-
-    <div class="login-form-panel">
-      <div class="form-label">Member Access</div>
-      <h2 class="form-title">Enter your <em>private dossier</em></h2>
-      <p class="form-description">Members of YPO Blue Ocean have been issued an individual dossier number and passcode. Enter both to access your personal AI maturity report, canvas, and 90-day plan.</p>
-
-      <% if (error) { %>
-        <div class="error-msg show"><%= error %></div>
-      <% } %>
-
-      <form method="POST" action="/login">
-        <div class="input-group">
-          <label>Dossier Number</label>
-          <input type="text" name="username" class="input-field" placeholder="BO-018-2026" required autocomplete="username">
-        </div>
-        <div class="input-group">
-          <label>Six-Digit Passcode</label>
-          <input type="password" name="password" class="input-field" placeholder="······" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn">
-          <span>Open Dossier</span>
-          <span class="btn-arrow">→</span>
-        </button>
-      </form>
-    </div>
+<body class="admin-login-page">
+  <div class="admin-login-box">
+    <h1>Blue Ocean Admin</h1>
+    <p>Control panel for managing dossiers, users, and module configuration.</p>
+    <% if (error) { %>
+      <div class="error-msg"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/admin/login">
+      <label>Username</label>
+      <input type="text" name="username" required autocomplete="username">
+      <label>Password</label>
+      <input type="password" name="password" required autocomplete="current-password">
+      <button type="submit">Sign In</button>
+    </form>
   </div>
 </body>
 </html>
+ENDOFFILE
