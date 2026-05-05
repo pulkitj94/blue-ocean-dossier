@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Responses — Blue Ocean</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="assessment-page">
+  <header class="site-header">
+    <div class="header-left">
+      <a href="/dashboard" class="header-back">&larr; Dashboard</a>
+      <span class="header-brand">BLUE OCEAN</span>
+    </div>
+    <div class="header-right">
+      <span class="header-dossier">Dossier <strong><%= user.username %></strong></span>
+    </div>
+  </header>
+
+  <main class="assessment-main">
+    <div class="assessment-header">
+      <p class="intro-label">YOUR RESPONSES</p>
+      <h1 class="assessment-title"><%= module.title %></h1>
+      <div class="info-banner">These are your submitted responses. They are now powering your downstream modules.</div>
+    </div>
+
+    <% 
+      let currentPillar = '';
+      questions.forEach(function(q) { 
+        const answer = responseMap[q.id] || 'Not answered';
+        if (q.pillar !== currentPillar) {
+          currentPillar = q.pillar;
+    %>
+      <div class="pillar-divider"><h3 class="pillar-name"><%= currentPillar %></h3></div>
+    <% } %>
+      <div class="question-card readonly">
+        <div class="question-number">Q<%= q.question_number %></div>
+        <p class="question-text"><%= q.question_text %></p>
+        <div class="response-display">
+          <% if (q.response_type === 'scale') { %>
+            <div class="scale-group">
+              <div class="scale-options">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <span class="scale-circle <%= answer == i ? 'selected' : '' %>"><%= i %></span>
+                <% } %>
+              </div>
+            </div>
+          <% } else if (q.response_type === 'multi_select') { %>
+            <% 
+              let selectedItems = [];
+              try { selectedItems = JSON.parse(answer); } catch(e) { selectedItems = [answer]; }
+            %>
+            <div class="select-group">
+              <% selectedItems.forEach(function(item) { %>
+                <span class="select-pill selected"><%= item %></span>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <span class="select-pill selected"><%= answer %></span>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+
+    <div class="submit-section">
+      <a href="/dashboard" class="btn-primary">BACK TO DASHBOARD &rarr;</a>
+    </div>
+  </main>
+</body>
+</html>

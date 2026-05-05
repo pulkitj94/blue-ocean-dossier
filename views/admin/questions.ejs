@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Questions — Blue Ocean Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <nav class="admin-nav">
+    <div class="nav-brand">🌊 Blue Ocean Admin</div>
+    <div class="nav-links">
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/users">Users</a>
+      <a href="/admin/questions" class="active">Questions</a>
+      <a href="/admin/modules">Modules</a>
+      <a href="/admin/responses">Responses</a>
+      <a href="/admin/logout" class="nav-logout">Sign Out</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <div class="page-header">
+      <h1>Question Management</h1>
+      <button class="btn-admin" onclick="showAddForm()">+ Add Question</button>
+    </div>
+
+    <!-- Add Question Form -->
+    <div id="addForm" class="form-panel" style="display:none;">
+      <h3>Add New Question</h3>
+      <div class="form-row">
+        <div class="form-col">
+          <label>Module</label>
+          <select id="qModule">
+            <% modules.forEach(function(m) { %>
+              <option value="<%= m.id %>">Module <%= m.module_number %>: <%= m.title %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="form-col">
+          <label>Question Number</label>
+          <input type="number" id="qNumber" value="<%= questions.length + 1 %>">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>Pillar / Category</label>
+          <input type="text" id="qPillar" placeholder="e.g. Strategy & Vision">
+        </div>
+        <div class="form-col">
+          <label>Response Type</label>
+          <select id="qType" onchange="toggleOptions()">
+            <option value="scale">Scale 1-5</option>
+            <option value="single_select">Single Select</option>
+            <option value="multi_select">Multi Select</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Question Text</label>
+          <textarea id="qText" rows="2" placeholder="Does your organization have..."></textarea>
+        </div>
+      </div>
+      <div class="form-row" id="optionsRow" style="display:none;">
+        <div class="form-col full">
+          <label>Options (comma-separated)</label>
+          <input type="text" id="qOptions" placeholder="Yes, Partially, No">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Scoring Logic</label>
+          <input type="text" id="qScoring" placeholder="Yes=5, Partially=3, No=1">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-admin" onclick="addQuestion()">Add Question</button>
+        <button class="btn-admin secondary" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Questions Table -->
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Pillar</th>
+            <th>Question</th>
+            <th>Type</th>
+            <th>Options</th>
+            <th>Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% questions.forEach(function(q) { %>
+            <tr class="<%= q.is_active ? '' : 'inactive-row' %>">
+              <td>Q<%= q.question_number %></td>
+              <td><%= q.pillar %></td>
+              <td class="question-cell"><%= q.question_text %></td>
+              <td><code><%= q.response_type %></code></td>
+              <td class="options-cell"><%= q.parsedOptions.length > 0 ? q.parsedOptions.join(', ') : '1-5 scale' %></td>
+              <td><%= q.is_active ? '✅' : '❌' %></td>
+              <td>
+                <button class="btn-admin small" onclick="toggleActive(<%= q.id %>, <%= q.is_active %>)">
+                  <%= q.is_active ? 'Disable' : 'Enable' %>
+                </button>
+                <button class="btn-danger small" onclick="deleteQuestion(<%= q.id %>)">Delete</button>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    function showAddForm() { document.getElementById('addForm').style.display = 'block'; }
+    
+    function toggleOptions() {
+      const type = document.getElementById('qType').value;
+      document.getElementById('optionsRow').style.display = type === 'scale' ? 'none' : 'block';
+    }
+
+    async function addQuestion() {
+      const optionsStr = document.getElementById('qOptions').value;
+      const options = optionsStr ? optionsStr.split(',').map(s => s.trim()) : [];
+
+      const body = {
+        module_id: parseInt(document.getElementById('qModule').value),
+        question_number: parseInt(document.getElementById('qNumber').value),
+        pillar: document.getElementById('qPillar').value,
+        question_text: document.getElementById('qText').value,
+        response_type: document.getElementById('qType').value,
+        options: JSON.stringify(options),
+        scoring_logic: document.getElementById('qScoring').value,
+      };
+
+      const res = await fetch('/admin/questions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      if (data.success) location.reload();
+      else alert(data.error || 'Failed to add question');
+    }
+
+    async function toggleActive(id, current) {
+      await fetch(`/admin/questions/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: current ? 0 : 1, pillar: '', question_text: '', response_type: '', options: '[]' })
+      });
+      location.reload();
+    }
+
+    async function deleteQuestion(id) {
+      if (!confirm('Delete this question? Existing responses will remain.')) return;
+      await fetch(`/admin/questions/${id}`, { method: 'DELETE' });
+      location.reload();
+    }
+  </script>
+</body>
+</html>

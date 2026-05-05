@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maturity Report — Blue Ocean</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="assessment-page">
+  <header class="site-header">
+    <div class="header-left">
+      <a href="/dashboard" class="header-back">&larr; Dashboard</a>
+      <span class="header-brand">BLUE OCEAN</span>
+    </div>
+    <div class="header-right">
+      <span class="header-dossier">Dossier <strong><%= user.username %></strong></span>
+    </div>
+  </header>
+
+  <main class="assessment-main">
+    <div class="assessment-header">
+      <p class="intro-label">MODULE 02</p>
+      <h1 class="assessment-title"><%= module.title %></h1>
+      <p class="assessment-desc"><%= module.description %></p>
+    </div>
+
+    <div class="report-card" style="background:#fff;border:1px solid #e0ddd5;padding:3rem;margin-top:2rem;text-align:center;">
+      <div style="font-size:4rem;margin-bottom:1rem;">📊</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:0.5rem;">Your AI Maturity Report</h2>
+      <p style="color:#666;font-size:0.9rem;max-width:500px;margin:0 auto 2rem;">A personalised eight-page dossier based on your assessment responses, benchmarked against the cohort and global leaders.</p>
+      
+      <a href="/module/2/download-pdf" class="btn-primary" style="display:inline-block;max-width:300px;margin:0 auto;" id="downloadBtn">
+        DOWNLOAD PDF &rarr;
+      </a>
+
+      <p style="margin-top:1.5rem;font-size:0.75rem;color:#999;">Your report was generated from your Module 1 assessment responses.</p>
+    </div>
+
+    <div class="submit-section" style="margin-top:2rem;">
+      <a href="/dashboard" class="btn-primary" style="max-width:300px;margin:0 auto;display:block;background:transparent;color:#1a1a1a;border:1px solid #e0ddd5;">BACK TO DASHBOARD &rarr;</a>
+    </div>
+  </main>
+</body>
+</html>

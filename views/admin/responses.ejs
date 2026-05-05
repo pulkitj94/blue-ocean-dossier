@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responses — Blue Ocean Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <nav class="admin-nav">
+    <div class="nav-brand">🌊 Blue Ocean Admin</div>
+    <div class="nav-links">
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/users">Users</a>
+      <a href="/admin/questions">Questions</a>
+      <a href="/admin/modules">Modules</a>
+      <a href="/admin/responses" class="active">Responses</a>
+      <a href="/admin/logout" class="nav-logout">Sign Out</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <h1>Assessment Responses</h1>
+    <p class="admin-subtitle">View responses submitted by each respondent.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Organization</th>
+            <th>Responses</th>
+            <th>Last Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (respondents.length === 0) { %>
+            <tr><td colspan="5" class="empty-state">No responses yet.</td></tr>
+          <% } %>
+          <% respondents.forEach(function(r) { %>
+            <tr>
+              <td><%= r.first_name %> <%= r.last_name %></td>
+              <td><%= r.organization || '—' %></td>
+              <td><%= r.response_count %></td>
+              <td><%= r.last_response ? new Date(r.last_response).toLocaleString() : '—' %></td>
+              <td>
+                <button class="btn-admin small" onclick="viewResponses(<%= r.id %>, '<%= r.first_name %> <%= r.last_name %>')">View</button>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Response Detail Modal -->
+    <div id="responseModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Responses</h3>
+          <button onclick="document.getElementById('responseModal').style.display='none'">&times;</button>
+        </div>
+        <div id="modalBody" class="modal-body"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function viewResponses(userId, name) {
+      document.getElementById('modalTitle').textContent = `Responses: ${name}`;
+      document.getElementById('modalBody').innerHTML = 'Loading...';
+      document.getElementById('responseModal').style.display = 'flex';
+
+      const res = await fetch(`/admin/responses/${userId}`);
+      const data = await res.json();
+
+      let html = '<table class="data-table compact"><thead><tr><th>#</th><th>Pillar</th><th>Question</th><th>Answer</th></tr></thead><tbody>';
+      data.responses.forEach(r => {
+        html += `<tr><td>Q${r.question_number}</td><td>${r.pillar}</td><td>${r.question_text}</td><td><strong>${r.answer}</strong></td></tr>`;
+      });
+      html += '</tbody></table>';
+      document.getElementById('modalBody').innerHTML = html;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module Config — Blue Ocean Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <nav class="admin-nav">
+    <div class="nav-brand">🌊 Blue Ocean Admin</div>
+    <div class="nav-links">
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/users">Users</a>
+      <a href="/admin/questions">Questions</a>
+      <a href="/admin/modules" class="active">Modules</a>
+      <a href="/admin/responses">Responses</a>
+      <a href="/admin/logout" class="nav-logout">Sign Out</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <h1>Module Configuration</h1>
+    <p class="admin-subtitle">Set unlock rules that determine when each module becomes available to respondents.</p>
+
+    <div class="modules-config">
+      <% modules.forEach(function(mod) { 
+        const modRules = rules.filter(r => r.module_id === mod.id);
+      %>
+        <div class="config-card">
+          <div class="config-header">
+            <h3>Module <%= mod.module_number %>: <%= mod.title %></h3>
+            <span class="config-badge"><%= mod.is_default_unlocked ? 'Default Unlocked' : 'Starts Locked' %></span>
+          </div>
+          <p class="config-desc"><%= mod.description %></p>
+          
+          <div class="config-rules">
+            <h4>Current Rules:</h4>
+            <% if (modRules.length === 0) { %>
+              <p class="config-empty"><%= mod.is_default_unlocked ? 'Always available (default unlocked)' : 'No rules set — will stay locked until manually changed' %></p>
+            <% } else { %>
+              <% modRules.forEach(function(rule) { %>
+                <p class="config-rule">
+                  <% if (rule.rule_type === 'after_module') { %>
+                    📋 Unlocks after <strong><%= rule.depends_on_title %></strong> is complete
+                  <% } else if (rule.rule_type === 'after_date') { %>
+                    📅 Unlocks on <strong><%= rule.unlock_date %></strong>
+                  <% } else { %>
+                    🔒 Manual unlock only
+                  <% } %>
+                </p>
+              <% }); %>
+            <% } %>
+          </div>
+
+          <% if (!mod.is_default_unlocked) { %>
+            <div class="config-edit">
+              <h4>Change Rule:</h4>
+              <div class="form-row compact">
+                <select id="ruleType_<%= mod.id %>" onchange="toggleRuleFields(<%= mod.id %>)">
+                  <option value="after_module">After module completes</option>
+                  <option value="after_date">After specific date</option>
+                  <option value="manual">Manual only</option>
+                </select>
+                <select id="ruleDep_<%= mod.id %>">
+                  <% modules.filter(m => m.id !== mod.id).forEach(function(m) { %>
+                    <option value="<%= m.id %>">Module <%= m.module_number %>: <%= m.title %></option>
+                  <% }); %>
+                </select>
+                <input type="date" id="ruleDate_<%= mod.id %>" style="display:none;">
+                <button class="btn-admin small" onclick="saveRule(<%= mod.id %>)">Save</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+  </main>
+
+  <script>
+    function toggleRuleFields(modId) {
+      const type = document.getElementById(`ruleType_${modId}`).value;
+      const dep = document.getElementById(`ruleDep_${modId}`);
+      const date = document.getElementById(`ruleDate_${modId}`);
+      dep.style.display = type === 'after_module' ? 'block' : 'none';
+      date.style.display = type === 'after_date' ? 'block' : 'none';
+    }
+
+    async function saveRule(modId) {
+      const type = document.getElementById(`ruleType_${modId}`).value;
+      const body = { module_id: modId, rule_type: type };
+      
+      if (type === 'after_module') {
+        body.depends_on_module_id = parseInt(document.getElementById(`ruleDep_${modId}`).value);
+      } else if (type === 'after_date') {
+        body.unlock_date = document.getElementById(`ruleDate_${modId}`).value;
+      }
+
+      const res = await fetch('/admin/modules/rules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      if (data.success) location.reload();
+      else alert('Failed to save rule');
+    }
+  </script>
+</body>
+</html>

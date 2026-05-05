@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= module.title %> — Blue Ocean</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="assessment-page">
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="/dashboard" class="header-back">&larr; Dashboard</a>
+      <span class="header-brand">BLUE OCEAN</span>
+    </div>
+    <div class="header-right">
+      <span class="header-dossier">Dossier <strong><%= user.username %></strong></span>
+    </div>
+  </header>
+
+  <main class="assessment-main">
+    <div class="assessment-header">
+      <p class="intro-label">MODULE <%= String(module.module_number).padStart(2, '0') %></p>
+      <h1 class="assessment-title"><%= module.title %></h1>
+      <p class="assessment-desc"><%= module.description %></p>
+      <% if (isComplete) { %>
+        <div class="info-banner">You have already completed this assessment. Your responses are shown below (read-only).</div>
+      <% } %>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+      <span class="progress-text" id="progressText">0 of <%= questions.length %></span>
+    </div>
+
+    <!-- Questions -->
+    <form id="assessmentForm" class="assessment-form">
+      <% 
+        let currentPillar = '';
+        questions.forEach(function(q, index) { 
+          const existingAnswer = responseMap[q.id] || '';
+          if (q.pillar !== currentPillar) {
+            currentPillar = q.pillar;
+      %>
+        <div class="pillar-divider">
+          <h3 class="pillar-name"><%= currentPillar %></h3>
+        </div>
+      <% } %>
+
+        <div class="question-card" data-question-id="<%= q.id %>">
+          <div class="question-number">Q<%= q.question_number %></div>
+          <p class="question-text"><%= q.question_text %></p>
+
+          <% if (q.response_type === 'scale') { %>
+            <!-- Scale 1-5 -->
+            <div class="scale-group">
+              <span class="scale-label-left"><%= q.scoring_logic.split(',')[0] || '1' %></span>
+              <div class="scale-options">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <label class="scale-option">
+                    <input type="radio" name="q_<%= q.id %>" value="<%= i %>" 
+                      <%= existingAnswer == i ? 'checked' : '' %>
+                      <%= isComplete ? 'disabled' : '' %>>
+                    <span class="scale-circle"><%= i %></span>
+                  </label>
+                <% } %>
+              </div>
+              <span class="scale-label-right"><%= (q.scoring_logic.split(',')[1] || '5').trim() %></span>
+            </div>
+
+          <% } else if (q.response_type === 'single_select') { %>
+            <!-- Single Select -->
+            <div class="select-group">
+              <% q.parsedOptions.forEach(function(opt) { %>
+                <label class="select-option">
+                  <input type="radio" name="q_<%= q.id %>" value="<%= opt %>"
+                    <%= existingAnswer === opt ? 'checked' : '' %>
+                    <%= isComplete ? 'disabled' : '' %>>
+                  <span class="select-pill"><%= opt %></span>
+                </label>
+              <% }); %>
+            </div>
+
+          <% } else if (q.response_type === 'multi_select') { %>
+            <!-- Multi Select -->
+            <div class="select-group multi">
+              <% q.parsedOptions.forEach(function(opt) { 
+                let checked = false;
+                try { checked = JSON.parse(existingAnswer || '[]').includes(opt); } catch(e) {}
+              %>
+                <label class="select-option">
+                  <input type="checkbox" name="q_<%= q.id %>" value="<%= opt %>"
+                    <%= checked ? 'checked' : '' %>
+                    <%= isComplete ? 'disabled' : '' %>>
+                  <span class="select-pill"><%= opt %></span>
+                </label>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+
+      <% }); %>
+
+      <% if (!isComplete) { %>
+        <div class="submit-section">
+          <button type="submit" class="btn-primary btn-submit" id="submitBtn">
+            SUBMIT ASSESSMENT &rarr;
+          </button>
+          <p class="submit-note">Once submitted, your responses will be saved and Module 2 will be unlocked.</p>
+        </div>
+      <% } else { %>
+        <div class="submit-section">
+          <a href="/dashboard" class="btn-primary">BACK TO DASHBOARD &rarr;</a>
+        </div>
+      <% } %>
+    </form>
+  </main>
+
+  <script>
+    // ---- PROGRESS BAR ----
+    const form = document.getElementById('assessmentForm');
+    const totalQuestions = <%= questions.length %>;
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    function updateProgress() {
+      const cards = document.querySelectorAll('.question-card');
+      let answered = 0;
+      cards.forEach(card => {
+        const inputs = card.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+        if (inputs.length > 0) answered++;
+      });
+      const pct = Math.round((answered / totalQuestions) * 100);
+      progressBar.style.width = pct + '%';
+      progressText.textContent = answered + ' of ' + totalQuestions;
+    }
+
+    form.addEventListener('change', updateProgress);
+    updateProgress(); // Initial check
+
+    // ---- FORM SUBMISSION ----
+    <% if (!isComplete) { %>
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const answers = {};
+      const cards = document.querySelectorAll('.question-card');
+      let allAnswered = true;
+
+      cards.forEach(card => {
+        const qId = card.dataset.questionId;
+        const radios = card.querySelectorAll('input[type="radio"]:checked');
+        const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
+
+        if (radios.length > 0) {
+          answers[qId] = radios[0].value;
+        } else if (checkboxes.length > 0) {
+          answers[qId] = Array.from(checkboxes).map(cb => cb.value);
+        } else {
+          allAnswered = false;
+          card.classList.add('unanswered');
+        }
+      });
+
+      if (!allAnswered) {
+        // Scroll to first unanswered
+        const first = document.querySelector('.unanswered');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        alert('Please answer all questions before submitting.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'SUBMITTING...';
+
+      try {
+        const res = await fetch('/module/<%= module.module_number %>/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          // Show success and redirect
+          btn.textContent = 'SUBMITTED ✓';
+          btn.style.background = '#2d5016';
+          setTimeout(() => window.location.href = '/dashboard', 1500);
+        } else {
+          alert(data.error || 'Submission failed. Please try again.');
+          btn.disabled = false;
+          btn.textContent = 'SUBMIT ASSESSMENT →';
+        }
+      } catch (err) {
+        alert('Network error. Please check your connection and try again.');
+        btn.disabled = false;
+        btn.textContent = 'SUBMIT ASSESSMENT →';
+      }
+    });
+    <% } %>
+  </script>
+</body>
+</html>

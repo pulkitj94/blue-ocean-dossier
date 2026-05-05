@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Blue Ocean</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <nav class="admin-nav">
+    <div class="nav-brand">🌊 Blue Ocean Admin</div>
+    <div class="nav-links">
+      <a href="/admin" class="active">Dashboard</a>
+      <a href="/admin/users">Users</a>
+      <a href="/admin/questions">Questions</a>
+      <a href="/admin/modules">Modules</a>
+      <a href="/admin/responses">Responses</a>
+      <a href="/admin/logout" class="nav-logout">Sign Out</a>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <h1>Dashboard</h1>
+    <p class="admin-subtitle">Welcome back, <%= admin.first_name %>.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number"><%= stats.userCount %></div>
+        <div class="stat-label">Respondents</div>
+        <a href="/admin/users" class="stat-link">Manage →</a>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= stats.moduleCount %></div>
+        <div class="stat-label">Modules</div>
+        <a href="/admin/modules" class="stat-link">Configure →</a>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= stats.responseCount %></div>
+        <div class="stat-label">Total Responses</div>
+        <a href="/admin/responses" class="stat-link">View →</a>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="action-grid">
+        <a href="/admin/users" class="action-card">
+          <span class="action-icon">👤</span>
+          <span class="action-title">Create User</span>
+          <span class="action-desc">Add new respondent with auto-generated credentials</span>
+        </a>
+        <a href="/admin/questions" class="action-card">
+          <span class="action-icon">📝</span>
+          <span class="action-title">Edit Questions</span>
+          <span class="action-desc">Add, edit, or remove assessment questions</span>
+        </a>
+        <a href="/admin/modules" class="action-card">
+          <span class="action-icon">🔐</span>
+          <span class="action-title">Module Rules</span>
+          <span class="action-desc">Configure unlock conditions and dependencies</span>
+        </a>
+        <a href="/admin/responses" class="action-card">
+          <span class="action-icon">📊</span>
+          <span class="action-title">View Responses</span>
+          <span class="action-desc">See all respondent answers and scores</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
