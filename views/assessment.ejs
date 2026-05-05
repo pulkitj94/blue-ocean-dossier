@@ -9,27 +9,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
   <style>
-    /* Tooltip */
-    .q-tooltip-wrap { position: relative; display: inline-block; margin-left: 8px; cursor: help; vertical-align: middle; }
-    .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--rule-soft, #ddd6c4); color: var(--ink-soft, #4a4640); font-family: var(--serif); font-size: 12px; font-style: italic; font-weight: 600; }
-    .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); width: 300px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.6; padding: 14px 16px; border-radius: 4px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+    /* Center question cards */
+    .assessment-form { max-width: 720px; margin: 0 auto; }
+    .question-card { text-align: center; padding: 2rem 2.5rem; }
+    .question-card .question-text-row { justify-content: center; text-align: center; }
+
+    /* Q# inline with question */
+    .question-inline { font-size: 15px; line-height: 1.65; color: var(--ink, #1a1916); margin-bottom: 0; }
+    .question-inline .q-num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--ink-muted, #8a857c); margin-right: 6px; }
+    .question-instruction { display: block; font-size: 12px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 4px; }
+
+    /* Tooltip closer */
+    .q-tooltip-wrap { margin-left: 4px; display: inline-block; vertical-align: middle; }
+    .q-tooltip-icon { width: 18px; height: 18px; font-size: 11px; }
+    .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); width: 300px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.6; padding: 14px 16px; border-radius: 4px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.25); text-align: left; }
     .q-tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--ink, #1a1916); }
     .q-tooltip-wrap:hover .q-tooltip-text { visibility: visible; opacity: 1; }
+    .q-tooltip-wrap { position: relative; cursor: help; }
 
-    /* Likert scale with labels */
-    .likert-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .likert-options { display: flex; gap: 0; width: 100%; max-width: 560px; justify-content: center; }
-    .likert-option { flex: 1; display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 8px 4px; transition: all 0.2s; }
-    .likert-option input { display: none; }
-    .likert-circle { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 2px solid var(--rule, #c9c2b0); border-radius: 50%; font-family: var(--mono); font-size: 14px; color: var(--ink-soft, #4a4640); transition: all 0.2s; margin-bottom: 6px; }
-    .likert-option input:checked + .likert-circle { background: var(--ink, #1a1916); border-color: var(--ink); color: var(--ivory, #f4f1ea); font-weight: 500; }
-    .likert-option:hover .likert-circle { border-color: var(--ink, #1a1916); }
-    .likert-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.05em; color: var(--ink-muted, #8a857c); text-align: center; line-height: 1.3; max-width: 90px; }
-    .likert-option input:checked ~ .likert-label { color: var(--ink, #1a1916); font-weight: 500; }
+    /* Draggable Slider */
+    .slider-group { padding: 16px 0 8px; }
+    .slider-wrap { position: relative; max-width: 480px; margin: 0 auto; padding: 0 24px; }
+    .slider-track { position: relative; height: 6px; background: var(--rule-soft, #ddd6c4); border-radius: 3px; margin: 20px 0 0; }
+    .slider-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--ink, #1a1916); border-radius: 3px; transition: width 0.15s; }
+    .slider-thumb { position: absolute; top: 50%; width: 28px; height: 28px; background: var(--ink, #1a1916); border: 3px solid var(--ivory, #f4f1ea); border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: left 0.15s; z-index: 5; }
+    .slider-thumb:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.15); }
+    .slider-thumb.unset { opacity: 0; }
+    .slider-notches { display: flex; justify-content: space-between; position: relative; margin-top: -3px; pointer-events: none; }
+    .slider-notch { width: 2px; height: 10px; background: var(--rule, #c9c2b0); }
+    .slider-labels { display: flex; justify-content: space-between; margin-top: 8px; }
+    .slider-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.03em; color: var(--ink-muted, #8a857c); text-align: center; width: 80px; line-height: 1.3; cursor: pointer; transition: color 0.2s; }
+    .slider-label.active { color: var(--ink, #1a1916); font-weight: 500; }
+    .slider-value-display { text-align: center; margin-top: 12px; font-family: var(--mono); font-size: 11px; color: var(--ink-muted); letter-spacing: 0.1em; min-height: 18px; }
+    .slider-value-display strong { color: var(--ink, #1a1916); }
 
-    /* Centered options */
+    /* Centered select pills */
     .select-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 8px 0; }
-    .select-pill { display: inline-block; padding: 10px 20px; border: 1px solid var(--rule, #c9c2b0); font-size: 14px; transition: all 0.2s; border-radius: 24px; color: var(--ink-soft, #4a4640); cursor: pointer; }
+    .select-pill { display: inline-block; padding: 10px 22px; border: 1px solid var(--rule, #c9c2b0); font-size: 14px; transition: all 0.2s; border-radius: 24px; color: var(--ink-soft, #4a4640); cursor: pointer; }
+    .select-option input { display: none; }
     .select-option input:checked + .select-pill { background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); border-color: var(--ink); }
     .select-option:hover .select-pill { border-color: var(--ink, #1a1916); }
 
@@ -49,29 +66,24 @@
     .redirect-note span { color: var(--accent, #6b1f1f); font-weight: 500; }
     .thankyou-check { font-size: 64px; margin-bottom: 24px; color: var(--success, #3d5a3d); }
 
-    /* Review summary */
     .review-pillar { margin-bottom: 28px; }
-    .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); }
-    .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
+    .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
     .review-item:last-child { border-bottom: none; }
     .review-question { flex: 1; font-size: 14px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
     .review-question span { color: var(--ink-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; margin-right: 6px; }
     .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 120px; text-align: right; }
     .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
 
-    /* Question text with tooltip inline */
-    .question-text-row { display: flex; align-items: flex-start; margin-bottom: 1.2rem; }
-    .question-text-row .question-text { margin-bottom: 0; flex: 1; }
-
-    /* Auto-scroll smooth */
     .question-card { scroll-margin-top: 100px; }
+    .pillar-divider { text-align: center; }
 
     @media (max-width: 600px) {
       .q-tooltip-text { width: 240px; }
-      .likert-options { gap: 0; }
-      .likert-circle { width: 40px; height: 40px; font-size: 12px; }
-      .likert-label { font-size: 8px; max-width: 60px; }
+      .slider-wrap { padding: 0 12px; }
+      .slider-label { font-size: 8px; width: 56px; }
       .select-pill { padding: 8px 14px; font-size: 13px; }
+      .question-card { padding: 1.5rem; }
     }
   </style>
 </head>
@@ -87,14 +99,13 @@
   </header>
 
   <main class="assessment-main">
-    <!-- PHASE 1: Questions -->
     <div id="questionPhase">
-      <div class="assessment-header">
+      <div class="assessment-header" style="text-align:center;">
         <p class="intro-label">MODULE <%= String(module.module_number).padStart(2, '0') %></p>
         <h1 class="assessment-title"><%= module.title %></h1>
-        <p class="assessment-desc"><%= module.description %></p>
+        <p class="assessment-desc" style="max-width:640px;margin:0 auto;"><%= module.description %></p>
         <% if (isComplete) { %>
-          <div class="info-banner">You have already completed this assessment. Your responses are shown below (read-only).</div>
+          <div class="info-banner" style="max-width:640px;margin:16px auto 0;">You have already completed this assessment. Your responses are shown below (read-only).</div>
         <% } %>
       </div>
 
@@ -110,6 +121,16 @@
             const existingAnswer = responseMap[q.id] || '';
             let scaleLabels = [];
             try { scaleLabels = JSON.parse(q.scale_labels || '[]'); } catch(e) {}
+
+            // Split question text and instruction (e.g. "Select all applicable")
+            let mainText = q.question_text;
+            let instruction = '';
+            const instrMatch = mainText.match(/\((Select[^)]+)\)/i);
+            if (instrMatch) {
+              instruction = instrMatch[1];
+              mainText = mainText.replace(instrMatch[0], '').trim();
+            }
+
             if (q.pillar !== currentPillar) {
               currentPillar = q.pillar;
         %>
@@ -119,29 +140,33 @@
         <% } %>
 
           <div class="question-card" data-question-id="<%= q.id %>" data-question-num="<%= q.question_number %>" data-pillar="<%= q.pillar %>">
-            <div class="question-number">Q<%= q.question_number %></div>
-            <div class="question-text-row">
-              <p class="question-text"><%= q.question_text %></p>
+            <p class="question-inline">
+              <span class="q-num">Q<%= q.question_number %>.</span>
+              <%= mainText %>
               <% if (q.tooltip) { %>
-                <div class="q-tooltip-wrap">
+                <span class="q-tooltip-wrap">
                   <span class="q-tooltip-icon">i</span>
-                  <div class="q-tooltip-text"><%= q.tooltip %></div>
-                </div>
+                  <span class="q-tooltip-text"><%= q.tooltip %></span>
+                </span>
               <% } %>
-            </div>
+              <% if (instruction) { %>
+                <span class="question-instruction"><%= instruction %></span>
+              <% } %>
+            </p>
 
             <% if (q.response_type === 'scale') { %>
-              <div class="likert-group">
-                <div class="likert-options">
-                  <% for (let i = 1; i <= 5; i++) { %>
-                    <label class="likert-option">
-                      <input type="radio" name="q_<%= q.id %>" value="<%= i %>"
-                        <%= existingAnswer == i ? 'checked' : '' %>
-                        <%= isComplete ? 'disabled' : '' %>>
-                      <span class="likert-circle"><%= i %></span>
-                      <span class="likert-label"><%= scaleLabels[i-1] || '' %></span>
-                    </label>
-                  <% } %>
+              <div class="slider-group">
+                <input type="hidden" name="q_<%= q.id %>" id="slider_val_<%= q.id %>" value="<%= existingAnswer || '' %>">
+                <div class="slider-wrap" data-qid="<%= q.id %>">
+                  <div class="slider-track">
+                    <div class="slider-fill" id="slider_fill_<%= q.id %>"></div>
+                    <div class="slider-thumb <%= existingAnswer ? '' : 'unset' %>" id="slider_thumb_<%= q.id %>"></div>
+                  </div>
+                  <div class="slider-labels">
+                    <% for (let i = 0; i < 5; i++) { %>
+                      <span class="slider-label <%= existingAnswer == (i+1) ? 'active' : '' %>" data-val="<%= i+1 %>"><%= i+1 %>. <%= scaleLabels[i] || '' %></span>
+                    <% } %>
+                  </div>
                 </div>
               </div>
 
@@ -192,14 +217,12 @@
 
     <!-- PHASE 2: Review Summary -->
     <div id="reviewPhase" class="review-section">
-      <div class="assessment-header">
+      <div class="assessment-header" style="text-align:center;">
         <p class="intro-label">REVIEW YOUR RESPONSES</p>
         <h1 class="assessment-title">Assessment Summary</h1>
-        <p class="assessment-desc">Please review your responses below. If you need to make changes, click "Edit Responses" to go back.</p>
+        <p class="assessment-desc" style="max-width:640px;margin:0 auto;">Please review your responses below. If you need to make changes, click "Edit Responses" to go back.</p>
       </div>
-
-      <div id="reviewContent"></div>
-
+      <div id="reviewContent" style="max-width:720px;margin:32px auto 0;"></div>
       <div class="review-actions">
         <button class="btn-primary" style="background:transparent;color:var(--ink);border:1px solid var(--ink);" onclick="goBackToEdit()">
           &larr; EDIT RESPONSES
@@ -232,12 +255,77 @@
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
 
+    // ---- SLIDER LOGIC ----
+    document.querySelectorAll('.slider-wrap').forEach(wrap => {
+      const qid = wrap.dataset.qid;
+      const track = wrap.querySelector('.slider-track');
+      const thumb = wrap.querySelector('.slider-thumb');
+      const fill = wrap.querySelector('.slider-fill');
+      const hiddenInput = document.getElementById('slider_val_' + qid);
+      const labels = wrap.querySelectorAll('.slider-label');
+      let dragging = false;
+
+      function setSliderValue(val) {
+        val = Math.max(1, Math.min(5, Math.round(val)));
+        const pct = ((val - 1) / 4) * 100;
+        thumb.style.left = pct + '%';
+        fill.style.width = pct + '%';
+        thumb.classList.remove('unset');
+        hiddenInput.value = val;
+        labels.forEach((l, i) => l.classList.toggle('active', i === val - 1));
+        // Trigger change event for progress tracking
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      function getValFromX(clientX) {
+        const rect = track.getBoundingClientRect();
+        const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        return Math.round(pct * 4) + 1;
+      }
+
+      // Click on track
+      track.addEventListener('mousedown', e => {
+        setSliderValue(getValFromX(e.clientX));
+        dragging = true;
+      });
+      track.addEventListener('touchstart', e => {
+        setSliderValue(getValFromX(e.touches[0].clientX));
+        dragging = true;
+      }, { passive: true });
+
+      // Drag
+      thumb.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+      thumb.addEventListener('touchstart', () => { dragging = true; }, { passive: true });
+
+      document.addEventListener('mousemove', e => { if (dragging) setSliderValue(getValFromX(e.clientX)); });
+      document.addEventListener('touchmove', e => { if (dragging) setSliderValue(getValFromX(e.touches[0].clientX)); }, { passive: true });
+
+      document.addEventListener('mouseup', () => { dragging = false; });
+      document.addEventListener('touchend', () => { dragging = false; });
+
+      // Click on label
+      labels.forEach(label => {
+        label.addEventListener('click', () => {
+          setSliderValue(parseInt(label.dataset.val));
+        });
+      });
+
+      // Initialize if existing value
+      if (hiddenInput.value) {
+        setSliderValue(parseInt(hiddenInput.value));
+      }
+    });
+
+    // ---- PROGRESS ----
     function updateProgress() {
       const cards = document.querySelectorAll('.question-card');
       let answered = 0;
       cards.forEach(card => {
-        const inputs = card.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
-        if (inputs.length > 0) answered++;
+        const radios = card.querySelectorAll('input[type="radio"]:checked');
+        const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
+        const hiddenSlider = card.querySelector('input[type="hidden"][id^="slider_val_"]');
+        if (radios.length > 0 || checkboxes.length > 0) answered++;
+        else if (hiddenSlider && hiddenSlider.value) answered++;
       });
       const pct = Math.round((answered / totalQuestions) * 100);
       progressBar.style.width = pct + '%';
@@ -247,9 +335,9 @@
     form.addEventListener('change', updateProgress);
     updateProgress();
 
-    // Limit multi-select to max mentioned in question text
+    // ---- MULTI-SELECT LIMIT ----
     document.querySelectorAll('.question-card').forEach(card => {
-      const text = card.querySelector('.question-text').textContent;
+      const text = card.querySelector('.question-inline').textContent;
       const match = text.match(/up to (\d+)/i);
       if (match) {
         const max = parseInt(match[1]);
@@ -267,21 +355,38 @@
       }
     });
 
-    // Auto-scroll to next question after answering
+    // ---- AUTO-SCROLL ----
     const allCards = Array.from(document.querySelectorAll('.question-card'));
     allCards.forEach((card, idx) => {
-      card.querySelectorAll('input[type="radio"]').forEach(input => {
+      // For radio/checkbox
+      card.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
         input.addEventListener('change', () => {
-          if (idx < allCards.length - 1) {
+          if (input.type === 'radio' && idx < allCards.length - 1) {
             setTimeout(() => {
               allCards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 300);
+            }, 400);
           }
         });
       });
     });
 
-    // Collect answers
+    // For sliders: auto-scroll on mouseup/touchend
+    document.querySelectorAll('.slider-wrap').forEach((wrap, i) => {
+      const card = wrap.closest('.question-card');
+      const cardIdx = allCards.indexOf(card);
+      ['mouseup', 'touchend'].forEach(evt => {
+        wrap.addEventListener(evt, () => {
+          const hiddenInput = wrap.closest('.question-card').querySelector('input[type="hidden"]');
+          if (hiddenInput && hiddenInput.value && cardIdx < allCards.length - 1) {
+            setTimeout(() => {
+              allCards[cardIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 500);
+          }
+        });
+      });
+    });
+
+    // ---- COLLECT ANSWERS ----
     function collectAnswers() {
       const answers = {};
       const cards = document.querySelectorAll('.question-card');
@@ -290,10 +395,14 @@
         const qId = card.dataset.questionId;
         const radios = card.querySelectorAll('input[type="radio"]:checked');
         const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
+        const hiddenSlider = card.querySelector('input[type="hidden"][id^="slider_val_"]');
+
         if (radios.length > 0) {
           answers[qId] = radios[0].value;
         } else if (checkboxes.length > 0) {
           answers[qId] = Array.from(checkboxes).map(cb => cb.value);
+        } else if (hiddenSlider && hiddenSlider.value) {
+          answers[qId] = hiddenSlider.value;
         } else {
           allAnswered = false;
           card.classList.add('unanswered');
@@ -303,7 +412,7 @@
     }
 
     <% if (!isComplete) { %>
-    // PHASE 1 → PHASE 2: Review
+    // PHASE 1 → PHASE 2
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       document.querySelectorAll('.unanswered').forEach(el => el.classList.remove('unanswered'));
@@ -316,15 +425,22 @@
         return;
       }
 
-      // Build review summary
       const cards = document.querySelectorAll('.question-card');
       const pillars = {};
       cards.forEach(card => {
         const pillar = card.dataset.pillar;
         const qNum = card.dataset.questionNum;
-        const qText = card.querySelector('.question-text').textContent;
+        const qText = card.querySelector('.question-inline').childNodes[1]?.textContent?.trim() || card.querySelector('.question-inline').textContent.replace(/Q\d+\./, '').trim();
         const qId = card.dataset.questionId;
         let answer = answers[qId];
+
+        // For scale answers, show the label
+        const labels = card.querySelectorAll('.slider-label');
+        if (labels.length > 0 && !isNaN(answer)) {
+          const labelEl = labels[parseInt(answer) - 1];
+          if (labelEl) answer = answer + ' — ' + labelEl.textContent.replace(/^\d+\.\s*/, '');
+        }
+
         if (Array.isArray(answer)) answer = answer.join(', ');
         if (!pillars[pillar]) pillars[pillar] = [];
         pillars[pillar].push({ qNum, qText, answer });
@@ -336,7 +452,7 @@
         html += '<div class="review-pillar-name">' + pillar + '</div>';
         items.forEach(item => {
           html += '<div class="review-item">';
-          html += '<div class="review-question"><span>Q' + item.qNum + '</span> ' + item.qText + '</div>';
+          html += '<div class="review-question"><span>Q' + item.qNum + '.</span> ' + item.qText + '</div>';
           html += '<div class="review-answer">' + item.answer + '</div>';
           html += '</div>';
         });
@@ -349,14 +465,12 @@
       window.scrollTo({ top: 0, behavior: 'instant' });
     });
 
-    // PHASE 2 → PHASE 1: Edit
     function goBackToEdit() {
       document.getElementById('reviewPhase').classList.remove('active');
       document.getElementById('questionPhase').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    // PHASE 2 → PHASE 3: Submit
     async function submitFinal() {
       const btn = document.getElementById('finalSubmitBtn');
       btn.disabled = true;
@@ -374,24 +488,20 @@
           document.getElementById('reviewPhase').classList.remove('active');
           document.getElementById('thankyouPhase').classList.add('active');
           window.scrollTo({ top: 0, behavior: 'instant' });
-
           let seconds = 5;
           const countdownEl = document.getElementById('countdown');
           const timer = setInterval(() => {
             seconds--;
             countdownEl.textContent = seconds;
-            if (seconds <= 0) {
-              clearInterval(timer);
-              window.location.href = '/dashboard';
-            }
+            if (seconds <= 0) { clearInterval(timer); window.location.href = '/dashboard'; }
           }, 1000);
         } else {
-          alert(data.error || 'Submission failed. Please try again.');
+          alert(data.error || 'Submission failed.');
           btn.disabled = false;
           btn.textContent = 'SUBMIT FINAL RESPONSES →';
         }
       } catch (err) {
-        alert('Network error. Please check your connection and try again.');
+        alert('Network error. Please try again.');
         btn.disabled = false;
         btn.textContent = 'SUBMIT FINAL RESPONSES →';
       }
