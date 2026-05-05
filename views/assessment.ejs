@@ -8,6 +8,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
+  <style>
+    /* Summary & Thank You styles */
+    .review-section { display: none; }
+    .review-section.active { display: block; }
+    .assessment-form.hidden { display: none; }
+    .thankyou-screen { display: none; text-align: center; padding: 80px 20px; }
+    .thankyou-screen.active { display: block; }
+    .thankyou-screen h1 { font-family: var(--serif); font-size: 52px; font-weight: 500; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .thankyou-screen h1 em { font-style: italic; color: var(--accent); }
+    .thankyou-screen .thankyou-desc { color: var(--ink-soft); font-size: 16px; line-height: 1.7; max-width: 560px; margin: 0 auto 32px; }
+    .thankyou-screen .thankyou-next { margin-bottom: 40px; }
+    .thankyou-screen .thankyou-next h3 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 12px; }
+    .thankyou-screen .thankyou-next p { color: var(--ink-soft); font-size: 15px; line-height: 1.7; max-width: 480px; margin: 0 auto; }
+    .thankyou-screen .thankyou-next p em { font-style: italic; color: var(--accent); }
+    .thankyou-screen .redirect-note { font-family: var(--mono); font-size: 11px; color: var(--ink-muted); letter-spacing: 0.1em; margin-bottom: 24px; }
+    .thankyou-screen .redirect-note span { color: var(--accent); font-weight: 500; }
+    .thankyou-check { font-size: 64px; margin-bottom: 24px; }
+
+    /* Review summary */
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .review-pillar { margin-bottom: 32px; }
+    .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--rule-soft); }
+    .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .review-item:last-child { border-bottom: none; }
+    .review-question { flex: 1; font-size: 14px; color: var(--ink-soft); line-height: 1.5; padding-right: 24px; }
+    .review-question span { color: var(--ink-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; margin-right: 8px; }
+    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 120px; text-align: right; }
+    .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
+  </style>
 </head>
 <body class="assessment-page">
   <header class="site-header">
@@ -21,96 +50,134 @@
   </header>
 
   <main class="assessment-main">
-    <div class="assessment-header">
-      <p class="intro-label">MODULE <%= String(module.module_number).padStart(2, '0') %></p>
-      <h1 class="assessment-title"><%= module.title %></h1>
-      <p class="assessment-desc"><%= module.description %></p>
-      <% if (isComplete) { %>
-        <div class="info-banner">You have already completed this assessment. Your responses are shown below (read-only).</div>
-      <% } %>
-    </div>
+    <!-- PHASE 1: Questions -->
+    <div id="questionPhase">
+      <div class="assessment-header">
+        <p class="intro-label">MODULE <%= String(module.module_number).padStart(2, '0') %></p>
+        <h1 class="assessment-title"><%= module.title %></h1>
+        <p class="assessment-desc"><%= module.description %></p>
+        <% if (isComplete) { %>
+          <div class="info-banner">You have already completed this assessment. Your responses are shown below (read-only).</div>
+        <% } %>
+      </div>
 
-    <div class="progress-container" id="progressContainer">
-      <div class="progress-bar" id="progressBar"></div>
-      <span class="progress-text" id="progressText">0 of <%= questions.length %></span>
-    </div>
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+        <span class="progress-text" id="progressText">0 of <%= questions.length %></span>
+      </div>
 
-    <form id="assessmentForm" class="assessment-form">
-      <% 
-        let currentPillar = '';
-        questions.forEach(function(q, index) { 
-          const existingAnswer = responseMap[q.id] || '';
-          if (q.pillar !== currentPillar) {
-            currentPillar = q.pillar;
-      %>
-        <div class="pillar-divider">
-          <h3 class="pillar-name"><%= currentPillar %></h3>
-        </div>
-      <% } %>
+      <form id="assessmentForm" class="assessment-form">
+        <% 
+          let currentPillar = '';
+          questions.forEach(function(q, index) { 
+            const existingAnswer = responseMap[q.id] || '';
+            if (q.pillar !== currentPillar) {
+              currentPillar = q.pillar;
+        %>
+          <div class="pillar-divider">
+            <h3 class="pillar-name"><%= currentPillar %></h3>
+          </div>
+        <% } %>
 
-        <div class="question-card" data-question-id="<%= q.id %>">
-          <div class="question-number">Q<%= q.question_number %></div>
-          <p class="question-text"><%= q.question_text %></p>
+          <div class="question-card" data-question-id="<%= q.id %>" data-question-num="<%= q.question_number %>" data-pillar="<%= q.pillar %>">
+            <div class="question-number">Q<%= q.question_number %></div>
+            <p class="question-text"><%= q.question_text %></p>
 
-          <% if (q.response_type === 'scale') { %>
-            <div class="scale-group">
-              <span class="scale-label-left"><%= q.scoring_logic.split(',')[0] || '1' %></span>
-              <div class="scale-options">
-                <% for (let i = 1; i <= 5; i++) { %>
-                  <label class="scale-option">
-                    <input type="radio" name="q_<%= q.id %>" value="<%= i %>" 
-                      <%= existingAnswer == i ? 'checked' : '' %>
-                      <%= isComplete ? 'disabled' : '' %>>
-                    <span class="scale-circle"><%= i %></span>
-                  </label>
-                <% } %>
+            <% if (q.response_type === 'scale') { %>
+              <div class="scale-group">
+                <span class="scale-label-left"><%= q.scoring_logic.split(',')[0] || '1' %></span>
+                <div class="scale-options">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <label class="scale-option">
+                      <input type="radio" name="q_<%= q.id %>" value="<%= i %>" 
+                        <%= existingAnswer == i ? 'checked' : '' %>
+                        <%= isComplete ? 'disabled' : '' %>>
+                      <span class="scale-circle"><%= i %></span>
+                    </label>
+                  <% } %>
+                </div>
+                <span class="scale-label-right"><%= (q.scoring_logic.split(',')[1] || '5').trim() %></span>
               </div>
-              <span class="scale-label-right"><%= (q.scoring_logic.split(',')[1] || '5').trim() %></span>
-            </div>
 
-          <% } else if (q.response_type === 'single_select') { %>
-            <div class="select-group">
-              <% q.parsedOptions.forEach(function(opt) { %>
-                <label class="select-option">
-                  <input type="radio" name="q_<%= q.id %>" value="<%= opt %>"
-                    <%= existingAnswer === opt ? 'checked' : '' %>
-                    <%= isComplete ? 'disabled' : '' %>>
-                  <span class="select-pill"><%= opt %></span>
-                </label>
-              <% }); %>
-            </div>
+            <% } else if (q.response_type === 'single_select') { %>
+              <div class="select-group">
+                <% q.parsedOptions.forEach(function(opt) { %>
+                  <label class="select-option">
+                    <input type="radio" name="q_<%= q.id %>" value="<%= opt %>"
+                      <%= existingAnswer === opt ? 'checked' : '' %>
+                      <%= isComplete ? 'disabled' : '' %>>
+                    <span class="select-pill"><%= opt %></span>
+                  </label>
+                <% }); %>
+              </div>
 
-          <% } else if (q.response_type === 'multi_select') { %>
-            <div class="select-group multi">
-              <% q.parsedOptions.forEach(function(opt) { 
-                let checked = false;
-                try { checked = JSON.parse(existingAnswer || '[]').includes(opt); } catch(e) {}
-              %>
-                <label class="select-option">
-                  <input type="checkbox" name="q_<%= q.id %>" value="<%= opt %>"
-                    <%= checked ? 'checked' : '' %>
-                    <%= isComplete ? 'disabled' : '' %>>
-                  <span class="select-pill"><%= opt %></span>
-                </label>
-              <% }); %>
-            </div>
-          <% } %>
-        </div>
+            <% } else if (q.response_type === 'multi_select') { %>
+              <div class="select-group multi">
+                <% q.parsedOptions.forEach(function(opt) { 
+                  let checked = false;
+                  try { checked = JSON.parse(existingAnswer || '[]').includes(opt); } catch(e) {}
+                %>
+                  <label class="select-option">
+                    <input type="checkbox" name="q_<%= q.id %>" value="<%= opt %>"
+                      <%= checked ? 'checked' : '' %>
+                      <%= isComplete ? 'disabled' : '' %>>
+                    <span class="select-pill"><%= opt %></span>
+                  </label>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
 
-      <% }); %>
+        <% }); %>
 
-      <% if (!isComplete) { %>
-        <div class="submit-section">
-          <button type="submit" class="btn-primary btn-submit" id="submitBtn">
-            SUBMIT ASSESSMENT &rarr;
-          </button>
-        </div>
-      <% } else { %>
-        <div class="submit-section">
-          <a href="/dashboard" class="btn-primary">BACK TO DASHBOARD &rarr;</a>
-        </div>
-      <% } %>
-    </form>
+        <% if (!isComplete) { %>
+          <div class="submit-section">
+            <button type="submit" class="btn-primary btn-submit" id="reviewBtn">
+              REVIEW RESPONSES &rarr;
+            </button>
+          </div>
+        <% } else { %>
+          <div class="submit-section">
+            <a href="/dashboard" class="btn-primary">BACK TO DASHBOARD &rarr;</a>
+          </div>
+        <% } %>
+      </form>
+    </div>
+
+    <!-- PHASE 2: Review Summary -->
+    <div id="reviewPhase" class="review-section">
+      <div class="assessment-header">
+        <p class="intro-label">REVIEW YOUR RESPONSES</p>
+        <h1 class="assessment-title">Assessment Summary</h1>
+        <p class="assessment-desc">Please review your responses below. If you need to make changes, click "Edit Responses" to go back.</p>
+      </div>
+
+      <div id="reviewContent"></div>
+
+      <div class="review-actions">
+        <button class="btn-primary" style="background:transparent;color:var(--ink);border:1px solid var(--ink);" onclick="goBackToEdit()">
+          &larr; EDIT RESPONSES
+        </button>
+        <button class="btn-primary" id="finalSubmitBtn" onclick="submitFinal()">
+          SUBMIT FINAL RESPONSES &rarr;
+        </button>
+      </div>
+    </div>
+
+    <!-- PHASE 3: Thank You -->
+    <div id="thankyouPhase" class="thankyou-screen">
+      <div class="thankyou-check">✓</div>
+      <p class="intro-label">YOUR PRIVATE RECORD</p>
+      <h1>Thank you, <em><%= user.first_name || 'Member' %></em></h1>
+      <p class="thankyou-desc">Your AI Maturity Assessment has been recorded. Twenty-five responses across five pillars — Strategy, Use Cases, Data, Technology, People & Governance — are now shaping your personalised dossier.</p>
+      <div class="thankyou-next">
+        <h3>What happens next</h3>
+        <p>Your maturity report is being prepared. It will benchmark your organisation against the cohort and global leaders.</p>
+        <p style="margin-top:12px;">Module 2 — <em>Maturity Report</em> — is now unlocked in your dossier.</p>
+      </div>
+      <p class="redirect-note">Redirecting to your dossier in <span id="countdown">5</span> seconds...</p>
+      <a href="/dashboard" class="btn-primary">RETURN TO DOSSIER &rarr;</a>
+    </div>
   </main>
 
   <script>
@@ -134,7 +201,7 @@
     form.addEventListener('change', updateProgress);
     updateProgress();
 
-    // Limit multi-select to max mentioned in question text (e.g. "Select up to 3")
+    // Limit multi-select to max mentioned in question text
     document.querySelectorAll('.question-card').forEach(card => {
       const text = card.querySelector('.question-text').textContent;
       const match = text.match(/up to (\d+)/i);
@@ -154,10 +221,8 @@
       }
     });
 
-    <% if (!isComplete) { %>
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
+    // Collect answers from form
+    function collectAnswers() {
       const answers = {};
       const cards = document.querySelectorAll('.question-card');
       let allAnswered = true;
@@ -177,16 +242,77 @@
         }
       });
 
+      return { answers, allAnswered };
+    }
+
+    <% if (!isComplete) { %>
+    // PHASE 1 → PHASE 2: Review
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Remove old unanswered highlights
+      document.querySelectorAll('.unanswered').forEach(el => el.classList.remove('unanswered'));
+
+      const { answers, allAnswered } = collectAnswers();
+
       if (!allAnswered) {
         const first = document.querySelector('.unanswered');
         if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        alert('Please answer all questions before submitting.');
+        alert('Please answer all questions before reviewing.');
         return;
       }
 
-      const btn = document.getElementById('submitBtn');
+      // Build review summary grouped by pillar
+      const cards = document.querySelectorAll('.question-card');
+      const pillars = {};
+
+      cards.forEach(card => {
+        const pillar = card.dataset.pillar;
+        const qNum = card.dataset.questionNum;
+        const qText = card.querySelector('.question-text').textContent;
+        const qId = card.dataset.questionId;
+        let answer = answers[qId];
+        if (Array.isArray(answer)) answer = answer.join(', ');
+
+        if (!pillars[pillar]) pillars[pillar] = [];
+        pillars[pillar].push({ qNum, qText, answer });
+      });
+
+      let html = '';
+      for (const [pillar, items] of Object.entries(pillars)) {
+        html += '<div class="review-pillar">';
+        html += '<div class="review-pillar-name">' + pillar + '</div>';
+        items.forEach(item => {
+          html += '<div class="review-item">';
+          html += '<div class="review-question"><span>Q' + item.qNum + '</span> ' + item.qText + '</div>';
+          html += '<div class="review-answer">' + item.answer + '</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      document.getElementById('reviewContent').innerHTML = html;
+
+      // Show review, hide questions
+      document.getElementById('questionPhase').style.display = 'none';
+      document.getElementById('reviewPhase').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+
+    // PHASE 2 → PHASE 1: Edit
+    function goBackToEdit() {
+      document.getElementById('reviewPhase').classList.remove('active');
+      document.getElementById('questionPhase').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    // PHASE 2 → PHASE 3: Submit
+    async function submitFinal() {
+      const btn = document.getElementById('finalSubmitBtn');
       btn.disabled = true;
       btn.textContent = 'SUBMITTING...';
+
+      const { answers } = collectAnswers();
 
       try {
         const res = await fetch('/module/<%= module.module_number %>/submit', {
@@ -198,20 +324,33 @@
         const data = await res.json();
 
         if (data.success) {
-          btn.textContent = 'SUBMITTED ✓';
-          btn.style.background = '#3d5a3d';
-          setTimeout(() => window.location.href = '/dashboard', 1500);
+          // Show thank you screen
+          document.getElementById('reviewPhase').classList.remove('active');
+          document.getElementById('thankyouPhase').classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'instant' });
+
+          // Countdown timer
+          let seconds = 5;
+          const countdownEl = document.getElementById('countdown');
+          const timer = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = seconds;
+            if (seconds <= 0) {
+              clearInterval(timer);
+              window.location.href = '/dashboard';
+            }
+          }, 1000);
         } else {
           alert(data.error || 'Submission failed. Please try again.');
           btn.disabled = false;
-          btn.textContent = 'SUBMIT ASSESSMENT →';
+          btn.textContent = 'SUBMIT FINAL RESPONSES →';
         }
       } catch (err) {
         alert('Network error. Please check your connection and try again.');
         btn.disabled = false;
-        btn.textContent = 'SUBMIT ASSESSMENT →';
+        btn.textContent = 'SUBMIT FINAL RESPONSES →';
       }
-    });
+    }
     <% } %>
   </script>
 </body>
