@@ -10,66 +10,49 @@
   <link rel="stylesheet" href="/css/main.css">
   <style>
     .assessment-form { max-width: 740px; margin: 0 auto; }
-    .question-card { text-align: center; padding: 2rem 2.5rem; }
+    .question-card { text-align: center; padding: 2rem 2.5rem; scroll-margin-top: 100px; }
     .pillar-divider { text-align: center; }
-    .question-card { scroll-margin-top: 100px; }
-
-    /* Q# inline — same font as question */
-    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink, #1a1916); margin-bottom: 4px; display: inline; }
-    .question-inline .q-num { font-size: 16px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 6px; }
-    .question-instruction { display: block; font-size: 13px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 6px; text-align: center; }
     .question-text-wrap { text-align: center; margin-bottom: 20px; }
-
-    /* Tooltip — bigger, inline after ? */
+    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink, #1a1916); display: inline; }
+    .question-inline .q-num { font-size: 16px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; }
+    .question-instruction { display: block; font-size: 13px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 6px; text-align: center; }
     .q-tooltip-wrap { position: relative; display: inline; margin-left: 3px; cursor: help; }
-    .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gold, #b8924a); color: #fff; font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 600; transition: transform 0.2s; vertical-align: middle; position: relative; top: -1px; }
+    .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gold, #b8924a); color: #fff; font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 600; vertical-align: middle; position: relative; top: -1px; transition: transform 0.2s; }
     .q-tooltip-wrap:hover .q-tooltip-icon { transform: scale(1.1); }
     .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); width: 320px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.65; padding: 16px 18px; border-radius: 6px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; }
     .q-tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--ink, #1a1916); }
     .q-tooltip-wrap:hover .q-tooltip-text { visibility: visible; opacity: 1; }
 
-    /* ---- SLIDER ---- */
     .slider-group { padding: 24px 0 12px; }
-    .slider-wrap { position: relative; max-width: 520px; margin: 0 auto; user-select: none; }
-    .slider-track-container { position: relative; padding: 0 7px; }
+    .slider-wrap { position: relative; max-width: 480px; margin: 0 auto; user-select: none; }
     .slider-track-bg { position: relative; height: 6px; background: var(--rule-soft, #ddd6c4); border-radius: 3px; cursor: pointer; }
     .slider-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--ink, #1a1916); border-radius: 3px; transition: width 0.15s; pointer-events: none; }
-    .slider-thumb { position: absolute; top: 50%; width: 30px; height: 30px; background: var(--ink, #1a1916); border: 3px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 10px rgba(0,0,0,0.25); transition: left 0.15s; z-index: 5; }
+    .slider-thumb { position: absolute; top: 50%; width: 28px; height: 28px; background: var(--ink, #1a1916); border: 3px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: left 0.15s; z-index: 5; }
     .slider-thumb:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.15); }
     .slider-thumb.unset { opacity: 0; pointer-events: none; }
-    .slider-dots { position: absolute; top: 0; left: 0; right: 0; height: 100%; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-    .slider-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--rule, #c9c2b0); z-index: 2; cursor: pointer; pointer-events: auto; transition: all 0.2s; }
+    .slider-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--rule, #c9c2b0); z-index: 2; cursor: pointer; transition: all 0.2s; }
     .slider-dot.filled { background: var(--ink, #1a1916); border-color: var(--ink); }
-    .slider-dot.current { background: #fff; border-color: var(--ink); border-width: 3px; }
+    .slider-dot.current { background: #fff; border-color: var(--ink, #1a1916); border-width: 3px; }
+    .slider-labels-row { position: relative; height: 36px; margin-top: 10px; }
+    .slider-label-abs { position: absolute; transform: translateX(-50%); font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-muted, #8a857c); text-align: center; width: 88px; line-height: 1.3; cursor: pointer; transition: all 0.2s; }
+    .slider-label-abs.active { color: var(--ink, #1a1916); font-weight: 600; }
 
-    /* Labels aligned under each dot */
-    .slider-labels-row { display: flex; justify-content: space-between; padding: 0 0; margin-top: 10px; }
-    .slider-label-item { flex: 1; display: flex; justify-content: center; }
-    .slider-label-item:first-child { justify-content: center; }
-    .slider-label-item:last-child { justify-content: center; }
-    .slider-label-text { font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-muted, #8a857c); text-align: center; line-height: 1.3; cursor: pointer; transition: all 0.2s; width: 80px; line-height: 1.3; }
-    .slider-label-text.active { color: var(--ink, #1a1916); font-weight: 600; }
-
-    /* Centered select pills */
     .select-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 12px 0; }
     .select-option input { display: none; }
     .select-pill { display: inline-block; padding: 11px 24px; border: 1.5px solid var(--rule, #c9c2b0); font-size: 15px; font-family: var(--sans, Inter, sans-serif); transition: all 0.2s; border-radius: 28px; color: var(--ink-soft, #4a4640); cursor: pointer; }
     .select-option input:checked + .select-pill { background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); border-color: var(--ink); }
     .select-option:hover .select-pill { border-color: var(--ink, #1a1916); }
 
-    /* Review */
-    .review-section { display: none; }
-    .review-section.active { display: block; }
+    .review-section { display: none; } .review-section.active { display: block; }
     .review-pillar { margin-bottom: 28px; }
     .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
     .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
     .review-item:last-child { border-bottom: none; }
-    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; width: 80px; line-height: 1.3; }
+    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; white-space: nowrap; }
     .review-question { flex: 1; font-size: 15px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
-    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; width: 80px; line-height: 1.3; }
+    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; }
     .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
 
-    /* Thank You */
     .thankyou-screen { display: none; text-align: center; padding: 80px 20px; }
     .thankyou-screen.active { display: block; }
     .thankyou-screen h1 { font-family: var(--serif); font-size: 48px; font-weight: 500; margin-bottom: 16px; }
@@ -85,8 +68,7 @@
 
     @media (max-width: 600px) {
       .q-tooltip-text { width: 250px; font-size: 12px; }
-      .slider-track-container { padding: 0 7px; } .slider-labels-row { padding: 0; }
-      .slider-label-text { font-size: 9px; }
+      .slider-label-abs { font-size: 9px; width: 64px; }
       .select-pill { padding: 9px 16px; font-size: 14px; }
       .question-card { padding: 1.5rem 1.2rem; }
       .question-inline { font-size: 15px; }
@@ -146,18 +128,16 @@
               <div class="slider-group">
                 <input type="hidden" name="q_<%= q.id %>" id="slider_val_<%= q.id %>" value="<%= existingAnswer || '' %>">
                 <div class="slider-wrap" data-qid="<%= q.id %>">
-                  <div class="slider-track-container">
-                    <div class="slider-track-bg">
-                      <div class="slider-fill" id="slider_fill_<%= q.id %>"></div>
-                      <div class="slider-dots">
-                        <% for (let i = 1; i <= 5; i++) { %><span class="slider-dot" data-val="<%= i %>"></span><% } %>
-                      </div>
-                      <div class="slider-thumb unset" id="slider_thumb_<%= q.id %>"></div>
-                    </div>
+                  <div class="slider-track-bg">
+                    <div class="slider-fill" id="slider_fill_<%= q.id %>"></div>
+                    <% for (let i = 0; i < 5; i++) { %>
+                      <span class="slider-dot" data-val="<%= i+1 %>" style="left:<%= i * 25 %>%"></span>
+                    <% } %>
+                    <div class="slider-thumb unset" id="slider_thumb_<%= q.id %>"></div>
                   </div>
                   <div class="slider-labels-row">
                     <% for (let i = 0; i < 5; i++) { %>
-                      <div class="slider-label-item"><span class="slider-label-text" data-val="<%= i+1 %>"><%= scaleLabels[i] || (i+1) %></span></div>
+                      <span class="slider-label-abs" data-val="<%= i+1 %>" style="left:<%= i * 25 %>%"><%= scaleLabels[i] || (i+1) %></span>
                     <% } %>
                   </div>
                 </div>
@@ -197,7 +177,6 @@
       </form>
     </div>
 
-    <!-- PHASE 2 -->
     <div id="reviewPhase" class="review-section">
       <div class="assessment-header" style="text-align:center;">
         <p class="intro-label">REVIEW YOUR RESPONSES</p>
@@ -211,9 +190,8 @@
       </div>
     </div>
 
-    <!-- PHASE 3 -->
     <div id="thankyouPhase" class="thankyou-screen">
-      <div class="thankyou-check">✓</div>
+      <div class="thankyou-check">&#10003;</div>
       <p class="intro-label">YOUR PRIVATE RECORD</p>
       <h1>Thank you, <em><%= user.first_name || 'Member' %></em></h1>
       <p class="thankyou-desc">Your AI Maturity Assessment has been recorded. Twenty-five responses across five pillars — Strategy, Use Cases, Data, Technology, People & Governance — are now shaping your personalised dossier.</p>
@@ -233,42 +211,44 @@
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
 
-    // SLIDER
     document.querySelectorAll('.slider-wrap').forEach(wrap => {
       const qid = wrap.dataset.qid;
       const trackBg = wrap.querySelector('.slider-track-bg');
       const thumb = wrap.querySelector('.slider-thumb');
       const fill = wrap.querySelector('.slider-fill');
       const hiddenInput = document.getElementById('slider_val_' + qid);
-      const labels = wrap.querySelectorAll('.slider-label-text');
+      const labels = wrap.querySelectorAll('.slider-label-abs');
       const dots = wrap.querySelectorAll('.slider-dot');
       let dragging = false;
 
-      function setVal(val) {
-        val = Math.max(1, Math.min(5, Math.round(val)));
-        const pct = ((val - 1) / 4) * 100;
+      function setVal(v) {
+        v = Math.max(1, Math.min(5, Math.round(v)));
+        const pct = ((v - 1) / 4) * 100;
         thumb.style.left = pct + '%'; fill.style.width = pct + '%';
-        thumb.classList.remove('unset'); hiddenInput.value = val;
-        labels.forEach((l, i) => l.classList.toggle('active', i === val - 1));
-        dots.forEach((d, i) => { d.classList.toggle('filled', i < val); d.classList.toggle('current', i === val - 1); });
+        thumb.classList.remove('unset'); hiddenInput.value = v;
+        labels.forEach((l, i) => l.classList.toggle('active', i === v - 1));
+        dots.forEach((d, i) => {
+          d.classList.remove('filled', 'current');
+          if (i + 1 < v) d.classList.add('filled');
+          if (i + 1 === v) d.classList.add('current');
+        });
         hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
       }
-      function getValFromX(x) { const r = trackBg.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(1, (x - r.left) / r.width)) * 4) + 1; }
+      function getV(x) { const r = trackBg.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(1, (x - r.left) / r.width)) * 4) + 1; }
 
-      trackBg.addEventListener('mousedown', e => { setVal(getValFromX(e.clientX)); dragging = true; });
-      trackBg.addEventListener('touchstart', e => { setVal(getValFromX(e.touches[0].clientX)); dragging = true; }, { passive: true });
+      trackBg.addEventListener('mousedown', e => { setVal(getV(e.clientX)); dragging = true; });
+      trackBg.addEventListener('touchstart', e => { setVal(getV(e.touches[0].clientX)); dragging = true; }, { passive: true });
       thumb.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
       thumb.addEventListener('touchstart', () => { dragging = true; }, { passive: true });
-      document.addEventListener('mousemove', e => { if (dragging) setVal(getValFromX(e.clientX)); });
-      document.addEventListener('touchmove', e => { if (dragging) setVal(getValFromX(e.touches[0].clientX)); }, { passive: true });
+      document.addEventListener('mousemove', e => { if (dragging) setVal(getV(e.clientX)); });
+      document.addEventListener('touchmove', e => { if (dragging) setVal(getV(e.touches[0].clientX)); }, { passive: true });
       document.addEventListener('mouseup', () => { dragging = false; });
       document.addEventListener('touchend', () => { dragging = false; });
-      dots.forEach(d => d.addEventListener('click', () => setVal(parseInt(d.dataset.val))));
+      dots.forEach(d => d.addEventListener('click', e => { e.stopPropagation(); setVal(parseInt(d.dataset.val)); }));
       labels.forEach(l => l.addEventListener('click', () => setVal(parseInt(l.dataset.val))));
       if (hiddenInput.value) setVal(parseInt(hiddenInput.value));
     });
 
-    // PROGRESS
     function updateProgress() {
       let a = 0;
       document.querySelectorAll('.question-card').forEach(c => {
@@ -280,7 +260,6 @@
     }
     form.addEventListener('change', updateProgress); updateProgress();
 
-    // MULTI-SELECT LIMIT
     document.querySelectorAll('.question-card').forEach(card => {
       const t = (card.querySelector('.question-inline') || {}).textContent || '';
       const m = t.match(/up to (\d+)/i);
@@ -289,7 +268,6 @@
       }
     });
 
-    // AUTO-SCROLL
     const allCards = Array.from(document.querySelectorAll('.question-card'));
     allCards.forEach((card, idx) => {
       card.querySelectorAll('input[type="radio"]').forEach(input => { input.addEventListener('change', () => { if (idx < allCards.length - 1) setTimeout(() => allCards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 400); }); });
@@ -299,7 +277,6 @@
       ['mouseup', 'touchend'].forEach(evt => { wrap.addEventListener(evt, () => { const h = card.querySelector('input[type="hidden"]'); if (h && h.value && ci < allCards.length - 1) setTimeout(() => allCards[ci + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 500); }); });
     });
 
-    // COLLECT
     function collectAnswers() {
       const answers = {}; let allOk = true;
       document.querySelectorAll('.question-card').forEach(c => {
@@ -316,7 +293,6 @@
     }
 
     <% if (!isComplete) { %>
-    // PHASE 1 → 2
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       document.querySelectorAll('.unanswered').forEach(el => el.classList.remove('unanswered'));
@@ -329,7 +305,7 @@
         const pillar = card.dataset.pillar, qNum = card.dataset.questionNum, qId = card.dataset.questionId;
         const qText = card.dataset.questionText || '';
         let answer = answers[qId];
-        const sLabels = card.querySelectorAll('.slider-label-text');
+        const sLabels = card.querySelectorAll('.slider-label-abs');
         if (sLabels.length > 0 && !isNaN(answer)) { const lbl = sLabels[parseInt(answer) - 1]; if (lbl) answer = answer + ' — ' + lbl.textContent.trim(); }
         if (Array.isArray(answer)) answer = answer.join(', ');
         if (!pillars[pillar]) pillars[pillar] = [];
