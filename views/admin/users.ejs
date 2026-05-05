@@ -32,42 +32,32 @@
       <h3>Create New Respondent</h3>
       <div class="form-row">
         <div class="form-col">
-          <label>Username (auto-generated if blank)</label>
-          <input type="text" id="newUsername" placeholder="BO-XXX-2026">
+          <label>Username</label>
+          <input type="text" id="newUsername" placeholder="">
         </div>
         <div class="form-col">
           <label>Passcode (auto-generated if blank)</label>
-          <input type="text" id="newPassword" placeholder="6-digit code">
+          <input type="text" id="newPassword" placeholder="">
         </div>
       </div>
       <div class="form-row">
         <div class="form-col">
           <label>First Name</label>
-          <input type="text" id="newFirstName" placeholder="Amit">
+          <input type="text" id="newFirstName" placeholder="">
         </div>
         <div class="form-col">
           <label>Last Name</label>
-          <input type="text" id="newLastName" placeholder="Sharma">
+          <input type="text" id="newLastName" placeholder="">
         </div>
       </div>
       <div class="form-row">
         <div class="form-col">
           <label>Designation</label>
-          <input type="text" id="newDesignation" placeholder="CEO">
+          <input type="text" id="newDesignation" placeholder="">
         </div>
         <div class="form-col">
           <label>Organization</label>
-          <input type="text" id="newOrg" placeholder="Northstar Industries">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-col">
-          <label>Cohort</label>
-          <input type="text" id="newCohort" placeholder="Median (73)">
-        </div>
-        <div class="form-col">
-          <label>Table Number</label>
-          <input type="text" id="newTable" placeholder="3">
+          <input type="text" id="newOrg" placeholder="">
         </div>
       </div>
       <div class="form-actions">
@@ -111,6 +101,8 @@
               <td><%= u.response_count %></td>
               <td><%= new Date(u.created_at).toLocaleDateString() %></td>
               <td>
+                <button class="btn-admin small" onclick="resetPasscode(<%= u.id %>, '<%= u.username %>')">Reset Passcode</button>
+                <button class="btn-admin small" onclick="editUser(<%= u.id %>, '<%= u.first_name %>', '<%= u.last_name %>', '<%= u.designation || '' %>', '<%= u.organization || '' %>')">Edit</button>
                 <button class="btn-danger small" onclick="deleteUser(<%= u.id %>, '<%= u.username %>')">Delete</button>
               </td>
             </tr>
@@ -118,10 +110,51 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Edit User Modal -->
+    <div id="editModal" class="form-panel" style="display:none;margin-top:1rem;">
+      <h3>Edit User: <span id="editUsername"></span></h3>
+      <input type="hidden" id="editUserId">
+      <div class="form-row">
+        <div class="form-col">
+          <label>First Name</label>
+          <input type="text" id="editFirstName">
+        </div>
+        <div class="form-col">
+          <label>Last Name</label>
+          <input type="text" id="editLastName">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>Designation</label>
+          <input type="text" id="editDesignation">
+        </div>
+        <div class="form-col">
+          <label>Organization</label>
+          <input type="text" id="editOrganization">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-admin" onclick="saveEdit()">Save Changes</button>
+        <button class="btn-admin secondary" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Passcode Reset Display -->
+    <div id="passcodeDisplay" class="credentials-box" style="display:none;margin-top:1rem;">
+      <h4>🔑 New Passcode Generated</h4>
+      <p><strong>Username:</strong> <span id="resetUsername"></span></p>
+      <p><strong>New Passcode:</strong> <span id="resetPasscode"></span></p>
+      <button class="btn-admin small" onclick="copyResetCredentials()">Copy to Clipboard</button>
+    </div>
   </main>
 
   <script>
-    function showCreateForm() { document.getElementById('createForm').style.display = 'block'; }
+    function showCreateForm() { 
+      document.getElementById('createForm').style.display = 'block';
+      document.getElementById('credentialsDisplay').style.display = 'none';
+    }
     function hideCreateForm() { document.getElementById('createForm').style.display = 'none'; }
 
     async function createUser() {
@@ -132,8 +165,6 @@
         last_name: document.getElementById('newLastName').value,
         designation: document.getElementById('newDesignation').value,
         organization: document.getElementById('newOrg').value,
-        cohort: document.getElementById('newCohort').value,
-        table_number: document.getElementById('newTable').value,
       };
 
       const res = await fetch('/admin/users/create', {
@@ -147,8 +178,6 @@
         document.getElementById('createdUsername').textContent = data.user.username;
         document.getElementById('createdPassword').textContent = data.user.password;
         document.getElementById('credentialsDisplay').style.display = 'block';
-        // Reload after a moment
-        setTimeout(() => location.reload(), 3000);
       } else {
         alert(data.error || 'Failed to create user');
       }
@@ -157,13 +186,63 @@
     function copyCredentials() {
       const u = document.getElementById('createdUsername').textContent;
       const p = document.getElementById('createdPassword').textContent;
-      navigator.clipboard.writeText(`Username: ${u}\nPasscode: ${p}`);
+      navigator.clipboard.writeText('Username: ' + u + '\nPasscode: ' + p);
       alert('Credentials copied!');
     }
 
+    async function resetPasscode(id, username) {
+      if (!confirm('Generate a new passcode for ' + username + '?')) return;
+      const res = await fetch('/admin/users/' + id + '/reset-passcode', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('resetUsername').textContent = username;
+        document.getElementById('resetPasscode').textContent = data.newPasscode;
+        document.getElementById('passcodeDisplay').style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } else {
+        alert('Failed to reset passcode');
+      }
+    }
+
+    function copyResetCredentials() {
+      const u = document.getElementById('resetUsername').textContent;
+      const p = document.getElementById('resetPasscode').textContent;
+      navigator.clipboard.writeText('Username: ' + u + '\nPasscode: ' + p);
+      alert('Credentials copied!');
+    }
+
+    function editUser(id, firstName, lastName, designation, organization) {
+      document.getElementById('editUserId').value = id;
+      document.getElementById('editUsername').textContent = firstName + ' ' + lastName;
+      document.getElementById('editFirstName').value = firstName;
+      document.getElementById('editLastName').value = lastName;
+      document.getElementById('editDesignation').value = designation;
+      document.getElementById('editOrganization').value = organization;
+      document.getElementById('editModal').style.display = 'block';
+      document.getElementById('editModal').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function saveEdit() {
+      const id = document.getElementById('editUserId').value;
+      const body = {
+        first_name: document.getElementById('editFirstName').value,
+        last_name: document.getElementById('editLastName').value,
+        designation: document.getElementById('editDesignation').value,
+        organization: document.getElementById('editOrganization').value,
+      };
+      const res = await fetch('/admin/users/' + id + '/edit', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.success) { location.reload(); }
+      else { alert(data.error || 'Failed to update'); }
+    }
+
     async function deleteUser(id, username) {
-      if (!confirm(`Delete user ${username}? This will remove all their responses.`)) return;
-      await fetch(`/admin/users/${id}`, { method: 'DELETE' });
+      if (!confirm('Delete user ' + username + '? This will remove all their responses.')) return;
+      await fetch('/admin/users/' + id, { method: 'DELETE' });
       location.reload();
     }
   </script>
