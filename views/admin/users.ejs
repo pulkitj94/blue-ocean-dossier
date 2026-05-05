@@ -27,65 +27,55 @@
       <button class="btn-admin" onclick="showCreateForm()">+ Create User</button>
     </div>
 
-    <!-- Create User Form (hidden by default) -->
     <div id="createForm" class="form-panel" style="display:none;">
       <h3>Create New Respondent</h3>
+      <p style="font-size:0.8rem;color:#6c757d;margin-bottom:1rem;">Dossier number (BO-XXX-2026) and passcode are auto-generated.</p>
       <div class="form-row">
         <div class="form-col">
-          <label>Username</label>
-          <input type="text" id="newUsername" placeholder="">
+          <label>First Name *</label>
+          <input type="text" id="newFirstName" required>
         </div>
         <div class="form-col">
-          <label>Passcode (auto-generated if blank)</label>
-          <input type="text" id="newPassword" placeholder="">
+          <label>Last Name *</label>
+          <input type="text" id="newLastName" required>
         </div>
       </div>
       <div class="form-row">
         <div class="form-col">
-          <label>First Name</label>
-          <input type="text" id="newFirstName" placeholder="">
+          <label>Email *</label>
+          <input type="email" id="newEmail" required>
         </div>
         <div class="form-col">
-          <label>Last Name</label>
-          <input type="text" id="newLastName" placeholder="">
+          <label>Organization</label>
+          <input type="text" id="newOrg">
         </div>
       </div>
       <div class="form-row">
         <div class="form-col">
           <label>Designation</label>
-          <input type="text" id="newDesignation" placeholder="">
+          <input type="text" id="newDesignation">
         </div>
-        <div class="form-col">
-          <label>Organization</label>
-          <input type="text" id="newOrg" placeholder="">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-col full">
-          <label>Email</label>
-          <input type="email" id="newEmail" placeholder="">
-        </div>
+        <div class="form-col"></div>
       </div>
       <div class="form-actions">
         <button class="btn-admin" onclick="createUser()">Create User</button>
         <button class="btn-admin secondary" onclick="hideCreateForm()">Cancel</button>
       </div>
 
-      <!-- Credentials display -->
       <div id="credentialsDisplay" style="display:none;" class="credentials-box">
         <h4>✅ User Created — Share these credentials:</h4>
-        <p><strong>Username:</strong> <span id="createdUsername"></span></p>
+        <p><strong>Dossier Number:</strong> <span id="createdUsername"></span></p>
         <p><strong>Passcode:</strong> <span id="createdPassword"></span></p>
+        <p><strong>Email:</strong> <span id="createdEmail"></span></p>
         <button class="btn-admin small" onclick="copyCredentials()">Copy to Clipboard</button>
       </div>
     </div>
 
-    <!-- User List -->
     <div class="data-table-wrap">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Username</th>
+            <th>Dossier #</th>
             <th>Name</th>
             <th>Email</th>
             <th>Organization</th>
@@ -109,8 +99,9 @@
               <td><%= u.response_count %></td>
               <td><%= new Date(u.created_at).toLocaleDateString() %></td>
               <td>
+                <button class="btn-admin small" onclick="sendInvite(<%= u.id %>, '<%= u.username %>', '<%= u.email || '' %>')">Send Invite</button>
                 <button class="btn-admin small" onclick="resetPasscode(<%= u.id %>, '<%= u.username %>')">Reset Passcode</button>
-                <button class="btn-admin small" onclick="editUser(<%= u.id %>, '<%= u.first_name %>', '<%= u.last_name %>', '<%= u.designation || '' %>', '<%= u.organization || '' %>')">Edit</button>
+                <button class="btn-admin small" onclick="editUser(<%= u.id %>, '<%= u.first_name %>', '<%= u.last_name %>', '<%= u.designation || '' %>', '<%= u.organization || '' %>', '<%= u.email || '' %>')">Edit</button>
                 <button class="btn-danger small" onclick="deleteUser(<%= u.id %>, '<%= u.username %>')">Delete</button>
               </td>
             </tr>
@@ -119,7 +110,6 @@
       </table>
     </div>
 
-    <!-- Edit User Modal -->
     <div id="editModal" class="form-panel" style="display:none;margin-top:1rem;">
       <h3>Edit User: <span id="editUsername"></span></h3>
       <input type="hidden" id="editUserId">
@@ -135,13 +125,20 @@
       </div>
       <div class="form-row">
         <div class="form-col">
-          <label>Designation</label>
-          <input type="text" id="editDesignation">
+          <label>Email</label>
+          <input type="email" id="editEmail">
         </div>
         <div class="form-col">
           <label>Organization</label>
           <input type="text" id="editOrganization">
         </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>Designation</label>
+          <input type="text" id="editDesignation">
+        </div>
+        <div class="form-col"></div>
       </div>
       <div class="form-actions">
         <button class="btn-admin" onclick="saveEdit()">Save Changes</button>
@@ -149,12 +146,16 @@
       </div>
     </div>
 
-    <!-- Passcode Reset Display -->
     <div id="passcodeDisplay" class="credentials-box" style="display:none;margin-top:1rem;">
       <h4>🔑 New Passcode Generated</h4>
-      <p><strong>Username:</strong> <span id="resetUsername"></span></p>
+      <p><strong>Dossier Number:</strong> <span id="resetUsername"></span></p>
       <p><strong>New Passcode:</strong> <span id="resetPasscode"></span></p>
       <button class="btn-admin small" onclick="copyResetCredentials()">Copy to Clipboard</button>
+    </div>
+
+    <div id="inviteStatus" class="credentials-box" style="display:none;margin-top:1rem;">
+      <h4 id="inviteStatusTitle"></h4>
+      <p id="inviteStatusMsg"></p>
     </div>
   </main>
 
@@ -167,25 +168,26 @@
 
     async function createUser() {
       const body = {
-        username: document.getElementById('newUsername').value,
-        password: document.getElementById('newPassword').value,
         first_name: document.getElementById('newFirstName').value,
         last_name: document.getElementById('newLastName').value,
+        email: document.getElementById('newEmail').value,
         designation: document.getElementById('newDesignation').value,
         organization: document.getElementById('newOrg').value,
-        email: document.getElementById('newEmail').value,
       };
-
+      if (!body.first_name || !body.last_name || !body.email) {
+        alert('First Name, Last Name, and Email are required.');
+        return;
+      }
       const res = await fetch('/admin/users/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-
       const data = await res.json();
       if (data.success) {
         document.getElementById('createdUsername').textContent = data.user.username;
         document.getElementById('createdPassword').textContent = data.user.password;
+        document.getElementById('createdEmail').textContent = body.email;
         document.getElementById('credentialsDisplay').style.display = 'block';
       } else {
         alert(data.error || 'Failed to create user');
@@ -195,8 +197,25 @@
     function copyCredentials() {
       const u = document.getElementById('createdUsername').textContent;
       const p = document.getElementById('createdPassword').textContent;
-      navigator.clipboard.writeText('Username: ' + u + '\nPasscode: ' + p);
+      navigator.clipboard.writeText('Dossier Number: ' + u + '\nPasscode: ' + p + '\nLink: https://blue-ocean-dossier.vercel.app');
       alert('Credentials copied!');
+    }
+
+    async function sendInvite(id, username, email) {
+      if (!email) { alert('No email address for this user. Edit the user to add one.'); return; }
+      if (!confirm('Send invite email to ' + email + '?')) return;
+      const res = await fetch('/admin/users/' + id + '/send-invite', { method: 'POST' });
+      const data = await res.json();
+      const box = document.getElementById('inviteStatus');
+      box.style.display = 'block';
+      if (data.success) {
+        document.getElementById('inviteStatusTitle').textContent = '✅ Invite Sent';
+        document.getElementById('inviteStatusMsg').textContent = 'Email sent to ' + email;
+      } else {
+        document.getElementById('inviteStatusTitle').textContent = '❌ Failed to Send';
+        document.getElementById('inviteStatusMsg').textContent = data.error || 'Unknown error';
+      }
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     async function resetPasscode(id, username) {
@@ -208,25 +227,24 @@
         document.getElementById('resetPasscode').textContent = data.newPasscode;
         document.getElementById('passcodeDisplay').style.display = 'block';
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
-        alert('Failed to reset passcode');
-      }
+      } else { alert('Failed to reset passcode'); }
     }
 
     function copyResetCredentials() {
       const u = document.getElementById('resetUsername').textContent;
       const p = document.getElementById('resetPasscode').textContent;
-      navigator.clipboard.writeText('Username: ' + u + '\nPasscode: ' + p);
+      navigator.clipboard.writeText('Dossier Number: ' + u + '\nPasscode: ' + p + '\nLink: https://blue-ocean-dossier.vercel.app');
       alert('Credentials copied!');
     }
 
-    function editUser(id, firstName, lastName, designation, organization) {
+    function editUser(id, firstName, lastName, designation, organization, email) {
       document.getElementById('editUserId').value = id;
       document.getElementById('editUsername').textContent = firstName + ' ' + lastName;
       document.getElementById('editFirstName').value = firstName;
       document.getElementById('editLastName').value = lastName;
       document.getElementById('editDesignation').value = designation;
       document.getElementById('editOrganization').value = organization;
+      document.getElementById('editEmail').value = email;
       document.getElementById('editModal').style.display = 'block';
       document.getElementById('editModal').scrollIntoView({ behavior: 'smooth' });
     }
@@ -238,6 +256,7 @@
         last_name: document.getElementById('editLastName').value,
         designation: document.getElementById('editDesignation').value,
         organization: document.getElementById('editOrganization').value,
+        email: document.getElementById('editEmail').value,
       };
       const res = await fetch('/admin/users/' + id + '/edit', {
         method: 'PUT',
