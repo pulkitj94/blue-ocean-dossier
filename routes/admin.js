@@ -104,7 +104,6 @@ router.post('/users/:id/send-invite', requireAdmin, asyncHandler(async (req, res
         
         <p>We have commissioned Garage Labs Technologies to build each of us a confidential AI maturity dossier. Over the course of the day, you will be shown exactly where your company sits relative to the room, relative to global leaders, and — most usefully — relative to the capital you have already deployed.</p>
         
-        <p>For this to work, we need <strong>eight minutes of your time now</strong>.</p>
         
         <div style="background: #1a1916; color: #f4f1ea; padding: 24px 32px; margin: 24px 0; font-family: monospace; font-size: 14px; line-height: 2;">
           <div><strong style="color: #b8924a;">Your dossier number:</strong> ${user.username}</div>
