@@ -44,10 +44,10 @@
 
     /* Labels aligned under each dot */
     .slider-labels-row { display: flex; justify-content: space-between; padding: 0 40px; margin-top: 10px; }
-    .slider-label-item { width: 0; display: flex; justify-content: center; }
-    .slider-label-item:first-child { justify-content: flex-start; }
-    .slider-label-item:last-child { justify-content: flex-end; }
-    .slider-label-text { font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-muted, #8a857c); text-align: center; line-height: 1.3; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .slider-label-item { flex: 1; display: flex; justify-content: center; }
+    .slider-label-item:first-child { justify-content: center; }
+    .slider-label-item:last-child { justify-content: center; }
+    .slider-label-text { font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-muted, #8a857c); text-align: center; line-height: 1.3; cursor: pointer; transition: all 0.2s; width: 80px; line-height: 1.3; }
     .slider-label-text.active { color: var(--ink, #1a1916); font-weight: 600; }
 
     /* Centered select pills */
@@ -64,9 +64,9 @@
     .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
     .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
     .review-item:last-child { border-bottom: none; }
-    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; white-space: nowrap; }
+    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; width: 80px; line-height: 1.3; }
     .review-question { flex: 1; font-size: 15px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
-    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; white-space: nowrap; }
+    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; width: 80px; line-height: 1.3; }
     .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
 
     /* Thank You */
