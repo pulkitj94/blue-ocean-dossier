@@ -28,7 +28,7 @@ router.get('/', requireAdmin, asyncHandler(async (req, res) => {
   const db = getDB();
   const uc = await db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'respondent'").get();
   const mc = await db.prepare('SELECT COUNT(*) as count FROM modules').get();
-  const rc = await db.prepare('SELECT COUNT(*) as count FROM responses').get();
+  const rc = await db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM responses').get();
   res.render('admin/dashboard', { admin: req.admin, stats: { userCount: uc.count, moduleCount: mc.count, responseCount: rc.count } });
 }));
 
