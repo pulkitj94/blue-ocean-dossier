@@ -47,11 +47,19 @@ async function startServer() {
 
 // For Vercel: export the app
 if (process.env.VERCEL) {
-  let appPromise;
+  let app;
+  let initPromise;
+  
+  async function getApp() {
+    if (app) return app;
+    if (!initPromise) initPromise = startServer();
+    app = await initPromise;
+    return app;
+  }
+
   module.exports = async (req, res) => {
-    if (!appPromise) appPromise = startServer();
-    const app = await appPromise;
-    return app(req, res);
+    const expressApp = await getApp();
+    return expressApp(req, res);
   };
 } else {
   startServer().catch(err => { console.error('Failed to start:', err); process.exit(1); });
