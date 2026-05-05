@@ -389,8 +389,9 @@
         const pillar = card.dataset.pillar;
         const qNum = card.dataset.questionNum;
         const inlineEl = card.querySelector('.question-inline');
-        let qText = '';
-        inlineEl.childNodes.forEach(n => { if (n.nodeType === 3) qText += n.textContent; });
+        let qText = inlineEl.textContent.replace(/Q[0-9]+\./, "").replace(/\bi\b$/, "").trim();
+
+
         qText = qText.trim();
         const qId = card.dataset.questionId;
         let answer = answers[qId];
