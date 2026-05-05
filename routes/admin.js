@@ -6,7 +6,7 @@ const { requireAdmin } = require('../middleware/auth');
 const { getDB } = require('../db/database');
 
 router.get('/login', (req, res) => {
-  if (req.cookies.admin_token) { try { jwt.verify(req.cookies.admin_token, process.env.JWT_SECRET); return res.redirect('/admin'); } catch(e) { res.clearCookie('admin_token'); } }
+  if (req.cookies.admin_token) { try { jwt.verify(req.cookies.admin_token, process.env.JWT_SECRET); return res.redirect(303, '/admin'); } catch(e) { res.clearCookie('admin_token'); } }
   res.render('admin/login', { error: null });
 });
 
@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
   if (!user || !bcrypt.compareSync(password, user.password_hash)) return res.render('admin/login', { error: 'Invalid admin credentials' });
   const token = jwt.sign({ userId: user.id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '8h' });
   res.cookie('admin_token', token, { httpOnly: true, maxAge: 8*3600000, sameSite: 'lax' });
-  res.redirect('/admin');
+  res.redirect(303, '/admin');
 });
 
 router.get('/logout', (req, res) => { res.clearCookie('admin_token'); res.redirect('/admin/login'); });
