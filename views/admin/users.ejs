@@ -60,6 +60,12 @@
           <input type="text" id="newOrg" placeholder="">
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Email</label>
+          <input type="email" id="newEmail" placeholder="">
+        </div>
+      </div>
       <div class="form-actions">
         <button class="btn-admin" onclick="createUser()">Create User</button>
         <button class="btn-admin secondary" onclick="hideCreateForm()">Cancel</button>
@@ -81,6 +87,7 @@
           <tr>
             <th>Username</th>
             <th>Name</th>
+            <th>Email</th>
             <th>Organization</th>
             <th>Designation</th>
             <th>Responses</th>
@@ -90,12 +97,13 @@
         </thead>
         <tbody>
           <% if (users.length === 0) { %>
-            <tr><td colspan="7" class="empty-state">No respondents yet. Create your first user above.</td></tr>
+            <tr><td colspan="8" class="empty-state">No respondents yet. Create your first user above.</td></tr>
           <% } %>
           <% users.forEach(function(u) { %>
             <tr>
               <td><code><%= u.username %></code></td>
               <td><%= u.first_name %> <%= u.last_name %></td>
+              <td><%= u.email || '—' %></td>
               <td><%= u.organization || '—' %></td>
               <td><%= u.designation || '—' %></td>
               <td><%= u.response_count %></td>
@@ -165,6 +173,7 @@
         last_name: document.getElementById('newLastName').value,
         designation: document.getElementById('newDesignation').value,
         organization: document.getElementById('newOrg').value,
+        email: document.getElementById('newEmail').value,
       };
 
       const res = await fetch('/admin/users/create', {
