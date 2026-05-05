@@ -9,44 +9,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
   <style>
-    /* Center question cards */
-    .assessment-form { max-width: 720px; margin: 0 auto; }
+    .assessment-form { max-width: 740px; margin: 0 auto; }
     .question-card { text-align: center; padding: 2rem 2.5rem; }
-    .question-card .question-text-row { justify-content: center; text-align: center; }
+    .pillar-divider { text-align: center; }
+    .question-card { scroll-margin-top: 100px; }
 
-    /* Q# inline with question */
-    .question-inline { font-size: 15px; line-height: 1.65; color: var(--ink, #1a1916); margin-bottom: 0; }
-    .question-inline .q-num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--ink-muted, #8a857c); margin-right: 6px; }
-    .question-instruction { display: block; font-size: 12px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 4px; }
+    /* Q# inline with question - matched font */
+    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink, #1a1916); margin-bottom: 4px; }
+    .question-inline .q-num { font-family: var(--sans, Inter, sans-serif); font-size: 16px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; }
+    .question-instruction { display: block; font-size: 13px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 6px; }
 
-    /* Tooltip closer */
-    .q-tooltip-wrap { margin-left: 4px; display: inline-block; vertical-align: middle; }
-    .q-tooltip-icon { width: 18px; height: 18px; font-size: 11px; }
-    .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); width: 300px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.6; padding: 14px 16px; border-radius: 4px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.25); text-align: left; }
-    .q-tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--ink, #1a1916); }
+    /* Tooltip - larger and more visible */
+    .q-tooltip-wrap { position: relative; display: inline-block; margin-left: 6px; cursor: help; vertical-align: middle; }
+    .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--gold, #b8924a); color: #fff; font-family: var(--serif); font-size: 14px; font-style: italic; font-weight: 600; transition: transform 0.2s; }
+    .q-tooltip-wrap:hover .q-tooltip-icon { transform: scale(1.1); }
+    .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); width: 320px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.65; padding: 16px 18px; border-radius: 6px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; }
+    .q-tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--ink, #1a1916); }
     .q-tooltip-wrap:hover .q-tooltip-text { visibility: visible; opacity: 1; }
-    .q-tooltip-wrap { position: relative; cursor: help; }
 
-    /* Draggable Slider */
-    .slider-group { padding: 16px 0 8px; }
-    .slider-wrap { position: relative; max-width: 480px; margin: 0 auto; padding: 0 24px; }
-    .slider-track { position: relative; height: 6px; background: var(--rule-soft, #ddd6c4); border-radius: 3px; margin: 20px 0 0; }
-    .slider-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--ink, #1a1916); border-radius: 3px; transition: width 0.15s; }
-    .slider-thumb { position: absolute; top: 50%; width: 28px; height: 28px; background: var(--ink, #1a1916); border: 3px solid var(--ivory, #f4f1ea); border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: left 0.15s; z-index: 5; }
+    /* ---- SLIDER with dot milestones ---- */
+    .slider-group { padding: 24px 0 12px; }
+    .slider-wrap { position: relative; max-width: 520px; margin: 0 auto; padding: 0 20px; user-select: none; }
+    .slider-track-bg { position: relative; height: 6px; background: var(--rule-soft, #ddd6c4); border-radius: 3px; cursor: pointer; }
+    .slider-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--ink, #1a1916); border-radius: 3px; transition: width 0.15s; pointer-events: none; }
+    .slider-thumb { position: absolute; top: 50%; width: 30px; height: 30px; background: var(--ink, #1a1916); border: 3px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 10px rgba(0,0,0,0.25); transition: left 0.15s; z-index: 5; }
     .slider-thumb:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.15); }
-    .slider-thumb.unset { opacity: 0; }
-    .slider-notches { display: flex; justify-content: space-between; position: relative; margin-top: -3px; pointer-events: none; }
-    .slider-notch { width: 2px; height: 10px; background: var(--rule, #c9c2b0); }
-    .slider-labels { display: flex; justify-content: space-between; margin-top: 8px; }
-    .slider-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.03em; color: var(--ink-muted, #8a857c); text-align: center; width: 80px; line-height: 1.3; cursor: pointer; transition: color 0.2s; }
-    .slider-label.active { color: var(--ink, #1a1916); font-weight: 500; }
-    .slider-value-display { text-align: center; margin-top: 12px; font-family: var(--mono); font-size: 11px; color: var(--ink-muted); letter-spacing: 0.1em; min-height: 18px; }
-    .slider-value-display strong { color: var(--ink, #1a1916); }
+    .slider-thumb.unset { opacity: 0; pointer-events: none; }
+
+    /* Milestone dots on the track */
+    .slider-dots { position: absolute; top: 0; left: 0; right: 0; height: 100%; display: flex; justify-content: space-between; align-items: center; pointer-events: none; padding: 0; }
+    .slider-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--rule, #c9c2b0); z-index: 2; transition: all 0.2s; cursor: pointer; pointer-events: auto; }
+    .slider-dot.filled { background: var(--ink, #1a1916); border-color: var(--ink, #1a1916); }
+    .slider-dot.current { background: #fff; border-color: var(--ink, #1a1916); border-width: 3px; width: 16px; height: 16px; }
+
+    /* Labels below slider */
+    .slider-labels { display: flex; justify-content: space-between; margin-top: 14px; padding: 0; }
+    .slider-label { font-family: var(--sans, Inter, sans-serif); font-size: 12px; color: var(--ink-muted, #8a857c); text-align: center; width: 90px; line-height: 1.35; cursor: pointer; transition: all 0.2s; }
+    .slider-label.active { color: var(--ink, #1a1916); font-weight: 600; }
 
     /* Centered select pills */
-    .select-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 8px 0; }
-    .select-pill { display: inline-block; padding: 10px 22px; border: 1px solid var(--rule, #c9c2b0); font-size: 14px; transition: all 0.2s; border-radius: 24px; color: var(--ink-soft, #4a4640); cursor: pointer; }
+    .select-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 12px 0; }
     .select-option input { display: none; }
+    .select-pill { display: inline-block; padding: 11px 24px; border: 1.5px solid var(--rule, #c9c2b0); font-size: 15px; font-family: var(--sans, Inter, sans-serif); transition: all 0.2s; border-radius: 28px; color: var(--ink-soft, #4a4640); cursor: pointer; }
     .select-option input:checked + .select-pill { background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); border-color: var(--ink); }
     .select-option:hover .select-pill { border-color: var(--ink, #1a1916); }
 
@@ -72,18 +76,17 @@
     .review-item:last-child { border-bottom: none; }
     .review-question { flex: 1; font-size: 14px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
     .review-question span { color: var(--ink-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; margin-right: 6px; }
-    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 120px; text-align: right; }
+    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; }
     .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
 
-    .question-card { scroll-margin-top: 100px; }
-    .pillar-divider { text-align: center; }
-
     @media (max-width: 600px) {
-      .q-tooltip-text { width: 240px; }
-      .slider-wrap { padding: 0 12px; }
-      .slider-label { font-size: 8px; width: 56px; }
-      .select-pill { padding: 8px 14px; font-size: 13px; }
-      .question-card { padding: 1.5rem; }
+      .q-tooltip-text { width: 250px; font-size: 12px; }
+      .slider-wrap { padding: 0 8px; }
+      .slider-label { font-size: 10px; width: 64px; }
+      .select-pill { padding: 9px 16px; font-size: 14px; }
+      .question-card { padding: 1.5rem 1.2rem; }
+      .question-inline { font-size: 15px; }
+      .slider-dot { width: 12px; height: 12px; }
     }
   </style>
 </head>
@@ -122,7 +125,6 @@
             let scaleLabels = [];
             try { scaleLabels = JSON.parse(q.scale_labels || '[]'); } catch(e) {}
 
-            // Split question text and instruction (e.g. "Select all applicable")
             let mainText = q.question_text;
             let instruction = '';
             const instrMatch = mainText.match(/\((Select[^)]+)\)/i);
@@ -158,13 +160,18 @@
               <div class="slider-group">
                 <input type="hidden" name="q_<%= q.id %>" id="slider_val_<%= q.id %>" value="<%= existingAnswer || '' %>">
                 <div class="slider-wrap" data-qid="<%= q.id %>">
-                  <div class="slider-track">
+                  <div class="slider-track-bg">
                     <div class="slider-fill" id="slider_fill_<%= q.id %>"></div>
-                    <div class="slider-thumb <%= existingAnswer ? '' : 'unset' %>" id="slider_thumb_<%= q.id %>"></div>
+                    <div class="slider-dots">
+                      <% for (let i = 1; i <= 5; i++) { %>
+                        <span class="slider-dot" data-val="<%= i %>"></span>
+                      <% } %>
+                    </div>
+                    <div class="slider-thumb unset" id="slider_thumb_<%= q.id %>"></div>
                   </div>
                   <div class="slider-labels">
                     <% for (let i = 0; i < 5; i++) { %>
-                      <span class="slider-label <%= existingAnswer == (i+1) ? 'active' : '' %>" data-val="<%= i+1 %>"><%= i+1 %>. <%= scaleLabels[i] || '' %></span>
+                      <span class="slider-label" data-val="<%= i+1 %>"><%= scaleLabels[i] || (i+1) %></span>
                     <% } %>
                   </div>
                 </div>
@@ -198,14 +205,11 @@
               </div>
             <% } %>
           </div>
-
         <% }); %>
 
         <% if (!isComplete) { %>
           <div class="submit-section">
-            <button type="submit" class="btn-primary btn-submit" id="reviewBtn">
-              REVIEW RESPONSES &rarr;
-            </button>
+            <button type="submit" class="btn-primary btn-submit" id="reviewBtn">REVIEW RESPONSES &rarr;</button>
           </div>
         <% } else { %>
           <div class="submit-section">
@@ -215,7 +219,7 @@
       </form>
     </div>
 
-    <!-- PHASE 2: Review Summary -->
+    <!-- PHASE 2: Review -->
     <div id="reviewPhase" class="review-section">
       <div class="assessment-header" style="text-align:center;">
         <p class="intro-label">REVIEW YOUR RESPONSES</p>
@@ -224,12 +228,8 @@
       </div>
       <div id="reviewContent" style="max-width:720px;margin:32px auto 0;"></div>
       <div class="review-actions">
-        <button class="btn-primary" style="background:transparent;color:var(--ink);border:1px solid var(--ink);" onclick="goBackToEdit()">
-          &larr; EDIT RESPONSES
-        </button>
-        <button class="btn-primary" id="finalSubmitBtn" onclick="submitFinal()">
-          SUBMIT FINAL RESPONSES &rarr;
-        </button>
+        <button class="btn-primary" style="background:transparent;color:var(--ink);border:1px solid var(--ink);" onclick="goBackToEdit()">&larr; EDIT RESPONSES</button>
+        <button class="btn-primary" id="finalSubmitBtn" onclick="submitFinal()">SUBMIT FINAL RESPONSES &rarr;</button>
       </div>
     </div>
 
@@ -255,17 +255,18 @@
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
 
-    // ---- SLIDER LOGIC ----
+    // ---- SLIDER ----
     document.querySelectorAll('.slider-wrap').forEach(wrap => {
       const qid = wrap.dataset.qid;
-      const track = wrap.querySelector('.slider-track');
+      const trackBg = wrap.querySelector('.slider-track-bg');
       const thumb = wrap.querySelector('.slider-thumb');
       const fill = wrap.querySelector('.slider-fill');
       const hiddenInput = document.getElementById('slider_val_' + qid);
       const labels = wrap.querySelectorAll('.slider-label');
+      const dots = wrap.querySelectorAll('.slider-dot');
       let dragging = false;
 
-      function setSliderValue(val) {
+      function setVal(val) {
         val = Math.max(1, Math.min(5, Math.round(val)));
         const pct = ((val - 1) / 4) * 100;
         thumb.style.left = pct + '%';
@@ -273,65 +274,47 @@
         thumb.classList.remove('unset');
         hiddenInput.value = val;
         labels.forEach((l, i) => l.classList.toggle('active', i === val - 1));
-        // Trigger change event for progress tracking
+        dots.forEach((d, i) => {
+          d.classList.toggle('filled', i < val);
+          d.classList.toggle('current', i === val - 1);
+        });
         hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
       }
 
       function getValFromX(clientX) {
-        const rect = track.getBoundingClientRect();
+        const rect = trackBg.getBoundingClientRect();
         const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
         return Math.round(pct * 4) + 1;
       }
 
-      // Click on track
-      track.addEventListener('mousedown', e => {
-        setSliderValue(getValFromX(e.clientX));
-        dragging = true;
-      });
-      track.addEventListener('touchstart', e => {
-        setSliderValue(getValFromX(e.touches[0].clientX));
-        dragging = true;
-      }, { passive: true });
-
-      // Drag
+      trackBg.addEventListener('mousedown', e => { setVal(getValFromX(e.clientX)); dragging = true; });
+      trackBg.addEventListener('touchstart', e => { setVal(getValFromX(e.touches[0].clientX)); dragging = true; }, { passive: true });
       thumb.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
       thumb.addEventListener('touchstart', () => { dragging = true; }, { passive: true });
-
-      document.addEventListener('mousemove', e => { if (dragging) setSliderValue(getValFromX(e.clientX)); });
-      document.addEventListener('touchmove', e => { if (dragging) setSliderValue(getValFromX(e.touches[0].clientX)); }, { passive: true });
-
+      document.addEventListener('mousemove', e => { if (dragging) setVal(getValFromX(e.clientX)); });
+      document.addEventListener('touchmove', e => { if (dragging) setVal(getValFromX(e.touches[0].clientX)); }, { passive: true });
       document.addEventListener('mouseup', () => { dragging = false; });
       document.addEventListener('touchend', () => { dragging = false; });
 
-      // Click on label
-      labels.forEach(label => {
-        label.addEventListener('click', () => {
-          setSliderValue(parseInt(label.dataset.val));
-        });
-      });
+      dots.forEach(dot => { dot.addEventListener('click', () => setVal(parseInt(dot.dataset.val))); });
+      labels.forEach(label => { label.addEventListener('click', () => setVal(parseInt(label.dataset.val))); });
 
-      // Initialize if existing value
-      if (hiddenInput.value) {
-        setSliderValue(parseInt(hiddenInput.value));
-      }
+      if (hiddenInput.value) setVal(parseInt(hiddenInput.value));
     });
 
     // ---- PROGRESS ----
     function updateProgress() {
-      const cards = document.querySelectorAll('.question-card');
       let answered = 0;
-      cards.forEach(card => {
+      document.querySelectorAll('.question-card').forEach(card => {
         const radios = card.querySelectorAll('input[type="radio"]:checked');
         const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
-        const hiddenSlider = card.querySelector('input[type="hidden"][id^="slider_val_"]');
+        const hs = card.querySelector('input[type="hidden"][id^="slider_val_"]');
         if (radios.length > 0 || checkboxes.length > 0) answered++;
-        else if (hiddenSlider && hiddenSlider.value) answered++;
+        else if (hs && hs.value) answered++;
       });
-      const pct = Math.round((answered / totalQuestions) * 100);
-      progressBar.style.width = pct + '%';
+      progressBar.style.width = Math.round((answered / totalQuestions) * 100) + '%';
       progressText.textContent = answered + ' of ' + totalQuestions;
     }
-
     form.addEventListener('change', updateProgress);
     updateProgress();
 
@@ -345,11 +328,7 @@
         boxes.forEach(cb => {
           cb.addEventListener('change', () => {
             const checked = card.querySelectorAll('input[type="checkbox"]:checked').length;
-            if (checked >= max) {
-              boxes.forEach(c => { if (!c.checked) c.disabled = true; });
-            } else {
-              boxes.forEach(c => c.disabled = false);
-            }
+            boxes.forEach(c => { if (!c.checked) c.disabled = checked >= max; });
           });
         });
       }
@@ -358,30 +337,19 @@
     // ---- AUTO-SCROLL ----
     const allCards = Array.from(document.querySelectorAll('.question-card'));
     allCards.forEach((card, idx) => {
-      // For radio/checkbox
-      card.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+      card.querySelectorAll('input[type="radio"]').forEach(input => {
         input.addEventListener('change', () => {
-          if (input.type === 'radio' && idx < allCards.length - 1) {
-            setTimeout(() => {
-              allCards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 400);
-          }
+          if (idx < allCards.length - 1) setTimeout(() => allCards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
         });
       });
     });
-
-    // For sliders: auto-scroll on mouseup/touchend
-    document.querySelectorAll('.slider-wrap').forEach((wrap, i) => {
+    document.querySelectorAll('.slider-wrap').forEach(wrap => {
       const card = wrap.closest('.question-card');
-      const cardIdx = allCards.indexOf(card);
+      const cidx = allCards.indexOf(card);
       ['mouseup', 'touchend'].forEach(evt => {
         wrap.addEventListener(evt, () => {
-          const hiddenInput = wrap.closest('.question-card').querySelector('input[type="hidden"]');
-          if (hiddenInput && hiddenInput.value && cardIdx < allCards.length - 1) {
-            setTimeout(() => {
-              allCards[cardIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 500);
-          }
+          const hi = card.querySelector('input[type="hidden"]');
+          if (hi && hi.value && cidx < allCards.length - 1) setTimeout(() => allCards[cidx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
         });
       });
     });
@@ -389,35 +357,25 @@
     // ---- COLLECT ANSWERS ----
     function collectAnswers() {
       const answers = {};
-      const cards = document.querySelectorAll('.question-card');
       let allAnswered = true;
-      cards.forEach(card => {
+      document.querySelectorAll('.question-card').forEach(card => {
         const qId = card.dataset.questionId;
         const radios = card.querySelectorAll('input[type="radio"]:checked');
         const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
-        const hiddenSlider = card.querySelector('input[type="hidden"][id^="slider_val_"]');
-
-        if (radios.length > 0) {
-          answers[qId] = radios[0].value;
-        } else if (checkboxes.length > 0) {
-          answers[qId] = Array.from(checkboxes).map(cb => cb.value);
-        } else if (hiddenSlider && hiddenSlider.value) {
-          answers[qId] = hiddenSlider.value;
-        } else {
-          allAnswered = false;
-          card.classList.add('unanswered');
-        }
+        const hs = card.querySelector('input[type="hidden"][id^="slider_val_"]');
+        if (radios.length > 0) answers[qId] = radios[0].value;
+        else if (checkboxes.length > 0) answers[qId] = Array.from(checkboxes).map(cb => cb.value);
+        else if (hs && hs.value) answers[qId] = hs.value;
+        else { allAnswered = false; card.classList.add('unanswered'); }
       });
       return { answers, allAnswered };
     }
 
     <% if (!isComplete) { %>
-    // PHASE 1 → PHASE 2
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       document.querySelectorAll('.unanswered').forEach(el => el.classList.remove('unanswered'));
       const { answers, allAnswered } = collectAnswers();
-
       if (!allAnswered) {
         const first = document.querySelector('.unanswered');
         if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -430,17 +388,17 @@
       cards.forEach(card => {
         const pillar = card.dataset.pillar;
         const qNum = card.dataset.questionNum;
-        const qText = card.querySelector('.question-inline').childNodes[1]?.textContent?.trim() || card.querySelector('.question-inline').textContent.replace(/Q\d+\./, '').trim();
+        const inlineEl = card.querySelector('.question-inline');
+        let qText = '';
+        inlineEl.childNodes.forEach(n => { if (n.nodeType === 3) qText += n.textContent; });
+        qText = qText.trim();
         const qId = card.dataset.questionId;
         let answer = answers[qId];
-
-        // For scale answers, show the label
-        const labels = card.querySelectorAll('.slider-label');
-        if (labels.length > 0 && !isNaN(answer)) {
-          const labelEl = labels[parseInt(answer) - 1];
-          if (labelEl) answer = answer + ' — ' + labelEl.textContent.replace(/^\d+\.\s*/, '');
+        const sliderLabels = card.querySelectorAll('.slider-label');
+        if (sliderLabels.length > 0 && !isNaN(answer)) {
+          const lbl = sliderLabels[parseInt(answer) - 1];
+          if (lbl) answer = answer + ' — ' + lbl.textContent.trim();
         }
-
         if (Array.isArray(answer)) answer = answer.join(', ');
         if (!pillars[pillar]) pillars[pillar] = [];
         pillars[pillar].push({ qNum, qText, answer });
@@ -448,17 +406,12 @@
 
       let html = '';
       for (const [pillar, items] of Object.entries(pillars)) {
-        html += '<div class="review-pillar">';
-        html += '<div class="review-pillar-name">' + pillar + '</div>';
+        html += '<div class="review-pillar"><div class="review-pillar-name">' + pillar + '</div>';
         items.forEach(item => {
-          html += '<div class="review-item">';
-          html += '<div class="review-question"><span>Q' + item.qNum + '.</span> ' + item.qText + '</div>';
-          html += '<div class="review-answer">' + item.answer + '</div>';
-          html += '</div>';
+          html += '<div class="review-item"><div class="review-question"><span>Q' + item.qNum + '.</span> ' + item.qText + '</div><div class="review-answer">' + item.answer + '</div></div>';
         });
         html += '</div>';
       }
-
       document.getElementById('reviewContent').innerHTML = html;
       document.getElementById('questionPhase').style.display = 'none';
       document.getElementById('reviewPhase').classList.add('active');
@@ -473,38 +426,19 @@
 
     async function submitFinal() {
       const btn = document.getElementById('finalSubmitBtn');
-      btn.disabled = true;
-      btn.textContent = 'SUBMITTING...';
+      btn.disabled = true; btn.textContent = 'SUBMITTING...';
       const { answers } = collectAnswers();
-
       try {
-        const res = await fetch('/module/<%= module.module_number %>/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers })
-        });
+        const res = await fetch('/module/<%= module.module_number %>/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers }) });
         const data = await res.json();
         if (data.success) {
           document.getElementById('reviewPhase').classList.remove('active');
           document.getElementById('thankyouPhase').classList.add('active');
           window.scrollTo({ top: 0, behavior: 'instant' });
-          let seconds = 5;
-          const countdownEl = document.getElementById('countdown');
-          const timer = setInterval(() => {
-            seconds--;
-            countdownEl.textContent = seconds;
-            if (seconds <= 0) { clearInterval(timer); window.location.href = '/dashboard'; }
-          }, 1000);
-        } else {
-          alert(data.error || 'Submission failed.');
-          btn.disabled = false;
-          btn.textContent = 'SUBMIT FINAL RESPONSES →';
-        }
-      } catch (err) {
-        alert('Network error. Please try again.');
-        btn.disabled = false;
-        btn.textContent = 'SUBMIT FINAL RESPONSES →';
-      }
+          let s = 5; const c = document.getElementById('countdown');
+          const t = setInterval(() => { s--; c.textContent = s; if (s <= 0) { clearInterval(t); window.location.href = '/dashboard'; } }, 1000);
+        } else { alert(data.error || 'Failed.'); btn.disabled = false; btn.textContent = 'SUBMIT FINAL RESPONSES →'; }
+      } catch (err) { alert('Network error.'); btn.disabled = false; btn.textContent = 'SUBMIT FINAL RESPONSES →'; }
     }
     <% } %>
   </script>
