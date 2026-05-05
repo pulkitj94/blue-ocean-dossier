@@ -3,25 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Blue Ocean</title>
+  <title>Blue Ocean — The Art of the Impossible</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
 </head>
-<body class="admin-login-page">
-  <div class="admin-login-box">
-    <h1>Blue Ocean Admin</h1>
-    <p>Control panel for managing dossiers, users, and module configuration.</p>
-    <% if (error) { %>
-      <div class="error-msg"><%= error %></div>
-    <% } %>
-    <form method="POST" action="/admin/login">
-      <label>Username</label>
-      <input type="text" name="username" required autocomplete="username">
-      <label>Password</label>
-      <input type="password" name="password" required autocomplete="current-password">
-      <button type="submit">Sign In</button>
-    </form>
+<body class="login-page">
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-content">
+        <div class="brand-top">
+          <span class="brand-label">YPO BLUE OCEAN</span>
+          <span class="brand-line-h"></span>
+        </div>
+        <h1 class="brand-title">
+          <em>The Art</em><br>
+          <em>of the</em><br>
+          <em class="gold">Impossible</em>
+        </h1>
+        <p class="brand-sub">A private AI dossier prepared for members. From pre-assessment to ninety-day plan, threaded into a single confidential record.</p>
+        <div class="brand-divider"></div>
+        <div class="brand-bottom">
+          <span class="brand-footer">GURGAON &middot; 18 JULY 2026</span>
+          <span class="brand-version">DOSSIER SYSTEM V1</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="login-form-content">
+        <p class="form-label">MEMBER ACCESS</p>
+        <h2 class="form-title">Enter your <em class="gold">private dossier</em></h2>
+        <p class="form-desc">Members of YPO Blue Ocean have been issued an individual dossier number and passcode. Enter both to access your personal AI maturity report, canvas, and 90-day plan.</p>
+
+        <% if (error) { %>
+          <div class="error-message"><%= error %></div>
+        <% } %>
+
+        <form method="POST" action="/login" class="login-form">
+          <div class="form-group">
+            <label class="form-field-label">DOSSIER NUMBER</label>
+            <input type="text" name="username" placeholder="BO-018-2026" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label class="form-field-label">SIX-DIGIT PASSCODE</label>
+            <input type="password" name="password" placeholder="••••••" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-primary">OPEN DOSSIER &nbsp; &rarr;</button>
+        </form>
+      </div>
+    </div>
   </div>
 </body>
 </html>
