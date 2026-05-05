@@ -1,4 +1,3 @@
-// server.js — Main entry point
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -11,55 +10,56 @@ async function startServer() {
   const app = express();
   const PORT = process.env.PORT || 3000;
 
-  // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'public')));
 
-  // View engine
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
 
-  // Routes
   app.get('/', (req, res) => res.redirect('/login'));
   app.use('/', require('./routes/auth'));
   app.use('/', require('./routes/dashboard'));
   app.use('/admin', require('./routes/admin'));
 
-  // Error handling
-  app.use((req, res) => res.status(404).render('error', { message: 'Page not found' }));
-  app.use((err, req, res, next) => { console.error(err); res.status(500).render('error', { message: 'Something went wrong.' }); });
+  app.use((req, res) => {
+    console.log('404:', req.method, req.url);
+    res.status(404).render('error', { message: 'Page not found' });
+  });
+  app.use((err, req, res, next) => {
+    console.error('Server error:', err.stack || err.message || err);
+    res.status(500).render('error', { message: 'Something went wrong: ' + (err.message || 'Unknown error') });
+  });
 
-  // For local dev
-  if (process.env.NODE_ENV !== 'production') {
+  if (!process.env.VERCEL) {
     app.listen(PORT, () => {
       console.log(`\n🌊 Blue Ocean Dossier System`);
-      console.log(`   ────────────────────────`);
       console.log(`   Respondent app: http://localhost:${PORT}`);
-      console.log(`   Admin panel:    http://localhost:${PORT}/admin`);
-      console.log(`   ────────────────────────\n`);
+      console.log(`   Admin panel:    http://localhost:${PORT}/admin\n`);
     });
   }
 
   return app;
 }
 
-// For Vercel: export the app
 if (process.env.VERCEL) {
   let app;
   let initPromise;
-  
   async function getApp() {
     if (app) return app;
     if (!initPromise) initPromise = startServer();
     app = await initPromise;
     return app;
   }
-
   module.exports = async (req, res) => {
-    const expressApp = await getApp();
-    return expressApp(req, res);
+    try {
+      const expressApp = await getApp();
+      return expressApp(req, res);
+    } catch(err) {
+      console.error('Vercel handler error:', err);
+      res.status(500).json({ error: err.message });
+    }
   };
 } else {
   startServer().catch(err => { console.error('Failed to start:', err); process.exit(1); });

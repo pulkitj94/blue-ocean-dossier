@@ -4,6 +4,8 @@ const path = require('path');
 const { requireAuth } = require('../middleware/auth');
 const { getDB } = require('../db/database');
 
+const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
 async function evaluateUnlockRules(userId) {
   const db = getDB();
   const modules = await db.prepare(`SELECT m.*, COALESCE(ums.status, 'locked') as status FROM modules m LEFT JOIN user_module_status ums ON ums.module_id = m.id AND ums.user_id = ? ORDER BY m.module_number`).all(userId);
@@ -37,14 +39,14 @@ async function evaluateUnlockRules(userId) {
   }
 }
 
-router.get('/dashboard', requireAuth, async (req, res) => {
+router.get('/dashboard', requireAuth, asyncHandler(async (req, res) => {
   await evaluateUnlockRules(req.user.id);
   const db = getDB();
   const modules = await db.prepare(`SELECT m.*, COALESCE(ums.status, 'locked') as status, ums.completed_at FROM modules m LEFT JOIN user_module_status ums ON ums.module_id = m.id AND ums.user_id = ? ORDER BY m.sort_order`).all(req.user.id);
   res.render('dashboard', { user: req.user, modules, customFields: {} });
-});
+}));
 
-router.get('/module/:number', requireAuth, async (req, res) => {
+router.get('/module/:number', requireAuth, asyncHandler(async (req, res) => {
   const db = getDB();
   const mod = await db.prepare('SELECT * FROM modules WHERE module_number = ?').get(parseInt(req.params.number));
   if (!mod) return res.status(404).render('error', { message: 'Module not found' });
@@ -52,7 +54,6 @@ router.get('/module/:number', requireAuth, async (req, res) => {
   const userStatus = await db.prepare('SELECT * FROM user_module_status WHERE user_id = ? AND module_id = ?').get(req.user.id, mod.id);
   if (!userStatus || userStatus.status === 'locked') return res.redirect('/dashboard');
 
-  // Module 2 = Report → serve the PDF download page
   if (mod.module_type === 'report') {
     return res.render('report', { user: req.user, module: mod });
   }
@@ -65,24 +66,18 @@ router.get('/module/:number', requireAuth, async (req, res) => {
   existing.forEach(r => { responseMap[r.question_id] = r.answer; });
 
   res.render('assessment', { user: req.user, module: mod, questions, responseMap, isComplete: userStatus.status === 'complete' });
-});
+}));
 
-// Module 2 PDF download endpoint
-router.get('/module/2/download-pdf', requireAuth, async (req, res) => {
-  // Check if the sample PDF exists, otherwise generate a placeholder
+router.get('/module/2/download-pdf', requireAuth, asyncHandler(async (req, res) => {
   const samplePdfPath = path.join(__dirname, '..', 'public', 'reports', 'sample-report.pdf');
   const fs = require('fs');
-  
   if (fs.existsSync(samplePdfPath)) {
     return res.download(samplePdfPath, `AI-Maturity-Report-${req.user.username}.pdf`);
   }
-  
-  // No PDF uploaded yet — send a text response explaining
-  res.setHeader('Content-Type', 'application/json');
   res.json({ message: 'PDF report not yet uploaded. Place your PDF at public/reports/sample-report.pdf' });
-});
+}));
 
-router.post('/module/:number/submit', requireAuth, async (req, res) => {
+router.post('/module/:number/submit', requireAuth, asyncHandler(async (req, res) => {
   const db = getDB();
   const mod = await db.prepare('SELECT * FROM modules WHERE module_number = ?').get(parseInt(req.params.number));
   if (!mod) return res.status(404).json({ error: 'Module not found' });
@@ -93,7 +88,6 @@ router.post('/module/:number/submit', requireAuth, async (req, res) => {
   const answers = req.body.answers;
   if (!answers || typeof answers !== 'object') return res.status(400).json({ error: 'No answers provided' });
 
-  // Save each answer
   for (const [questionId, answer] of Object.entries(answers)) {
     const answerStr = Array.isArray(answer) ? JSON.stringify(answer) : String(answer);
     let score = 0;
@@ -107,16 +101,12 @@ router.post('/module/:number/submit', requireAuth, async (req, res) => {
     }
   }
 
-  // Mark module as complete
   await db.prepare('UPDATE user_module_status SET status=?, completed_at=NOW() WHERE user_id=? AND module_id=?').run('complete', req.user.id, mod.id);
-  
-  // Evaluate unlock rules
   await evaluateUnlockRules(req.user.id);
-
   res.json({ success: true, message: 'Assessment submitted successfully' });
-});
+}));
 
-router.get('/module/:number/responses', requireAuth, async (req, res) => {
+router.get('/module/:number/responses', requireAuth, asyncHandler(async (req, res) => {
   const db = getDB();
   const mod = await db.prepare('SELECT * FROM modules WHERE module_number = ?').get(parseInt(req.params.number));
   if (!mod) return res.status(404).render('error', { message: 'Module not found' });
@@ -128,6 +118,6 @@ router.get('/module/:number/responses', requireAuth, async (req, res) => {
   questions.forEach(q => { try { q.parsedOptions = JSON.parse(q.options); } catch(e) { q.parsedOptions = []; } });
 
   res.render('responses', { user: req.user, module: mod, questions, responseMap });
-});
+}));
 
 module.exports = router;
