@@ -29,10 +29,15 @@
         <p class="intro-desc">This is your confidential workstream for 18 July. Every module below is private to you. Your pre-assessment feeds your maturity report; your report anchors your canvas; your canvas produces your 90-day plan. Nothing is shared unless you choose to pin it to the Commitment Wall at day-end.</p>
       </div>
       <div class="intro-meta">
-        <% if (user.organization) { %><div><strong><%= user.organization %></strong></div><% } %>
-        <% if (user.table_number) { %><div>Table <strong><%= user.table_number %></strong></div><% } %>
-        <% if (user.cohort) { %><div>Cohort band: <strong><%= user.cohort %></strong></div><% } %>
+        <div><strong><%= user.organization || "—" %></strong></div>
+        <div>Table <strong><%= user.table_number || "—" %></strong></div>
+        <div>Cohort band: <strong><%= user.cohort || "—" %></strong></div>
       </div>
+
+
+
+
+
     </div>
 
     <div class="divider"></div>

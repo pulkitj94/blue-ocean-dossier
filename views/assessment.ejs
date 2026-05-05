@@ -14,38 +14,41 @@
     .pillar-divider { text-align: center; }
     .question-card { scroll-margin-top: 100px; }
 
-    /* Q# inline with question - matched font */
-    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink, #1a1916); margin-bottom: 4px; }
-    .question-inline .q-num { font-family: var(--sans, Inter, sans-serif); font-size: 16px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; }
-    .question-instruction { display: block; font-size: 13px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 6px; }
+    /* Q# inline — same font as question */
+    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink, #1a1916); margin-bottom: 4px; display: inline; }
+    .question-inline .q-num { font-size: 16px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 6px; }
+    .question-instruction { display: block; font-size: 13px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 6px; text-align: center; }
+    .question-text-wrap { text-align: center; margin-bottom: 20px; }
 
-    /* Tooltip - larger and more visible */
-    .q-tooltip-wrap { position: relative; display: inline-block; margin-left: 6px; cursor: help; vertical-align: middle; }
-    .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--gold, #b8924a); color: #fff; font-family: var(--serif); font-size: 14px; font-style: italic; font-weight: 600; transition: transform 0.2s; }
+    /* Tooltip — bigger, inline after ? */
+    .q-tooltip-wrap { position: relative; display: inline; margin-left: 3px; cursor: help; }
+    .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gold, #b8924a); color: #fff; font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 600; transition: transform 0.2s; vertical-align: middle; position: relative; top: -1px; }
     .q-tooltip-wrap:hover .q-tooltip-icon { transform: scale(1.1); }
     .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); width: 320px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.65; padding: 16px 18px; border-radius: 6px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; }
     .q-tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--ink, #1a1916); }
     .q-tooltip-wrap:hover .q-tooltip-text { visibility: visible; opacity: 1; }
 
-    /* ---- SLIDER with dot milestones ---- */
+    /* ---- SLIDER ---- */
     .slider-group { padding: 24px 0 12px; }
-    .slider-wrap { position: relative; max-width: 520px; margin: 0 auto; padding: 0 20px; user-select: none; }
+    .slider-wrap { position: relative; max-width: 520px; margin: 0 auto; user-select: none; }
+    .slider-track-container { position: relative; padding: 0 40px; }
     .slider-track-bg { position: relative; height: 6px; background: var(--rule-soft, #ddd6c4); border-radius: 3px; cursor: pointer; }
     .slider-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--ink, #1a1916); border-radius: 3px; transition: width 0.15s; pointer-events: none; }
     .slider-thumb { position: absolute; top: 50%; width: 30px; height: 30px; background: var(--ink, #1a1916); border: 3px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 10px rgba(0,0,0,0.25); transition: left 0.15s; z-index: 5; }
     .slider-thumb:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.15); }
     .slider-thumb.unset { opacity: 0; pointer-events: none; }
+    .slider-dots { position: absolute; top: 0; left: 0; right: 0; height: 100%; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+    .slider-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--rule, #c9c2b0); z-index: 2; cursor: pointer; pointer-events: auto; transition: all 0.2s; }
+    .slider-dot.filled { background: var(--ink, #1a1916); border-color: var(--ink); }
+    .slider-dot.current { background: #fff; border-color: var(--ink); border-width: 3px; }
 
-    /* Milestone dots on the track */
-    .slider-dots { position: absolute; top: 0; left: 0; right: 0; height: 100%; display: flex; justify-content: space-between; align-items: center; pointer-events: none; padding: 0; }
-    .slider-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--rule, #c9c2b0); z-index: 2; transition: all 0.2s; cursor: pointer; pointer-events: auto; }
-    .slider-dot.filled { background: var(--ink, #1a1916); border-color: var(--ink, #1a1916); }
-    .slider-dot.current { background: #fff; border-color: var(--ink, #1a1916); border-width: 3px; width: 16px; height: 16px; }
-
-    /* Labels below slider */
-    .slider-labels { display: flex; justify-content: space-between; margin-top: 14px; padding: 0; }
-    .slider-label { font-family: var(--sans, Inter, sans-serif); font-size: 12px; color: var(--ink-muted, #8a857c); text-align: center; width: 90px; line-height: 1.35; cursor: pointer; transition: all 0.2s; }
-    .slider-label.active { color: var(--ink, #1a1916); font-weight: 600; }
+    /* Labels aligned under each dot */
+    .slider-labels-row { display: flex; justify-content: space-between; padding: 0 40px; margin-top: 10px; }
+    .slider-label-item { width: 0; display: flex; justify-content: center; }
+    .slider-label-item:first-child { justify-content: flex-start; }
+    .slider-label-item:last-child { justify-content: flex-end; }
+    .slider-label-text { font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-muted, #8a857c); text-align: center; line-height: 1.3; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .slider-label-text.active { color: var(--ink, #1a1916); font-weight: 600; }
 
     /* Centered select pills */
     .select-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 12px 0; }
@@ -54,12 +57,22 @@
     .select-option input:checked + .select-pill { background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); border-color: var(--ink); }
     .select-option:hover .select-pill { border-color: var(--ink, #1a1916); }
 
-    /* Review & Thank You */
+    /* Review */
     .review-section { display: none; }
     .review-section.active { display: block; }
+    .review-pillar { margin-bottom: 28px; }
+    .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
+    .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
+    .review-item:last-child { border-bottom: none; }
+    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; white-space: nowrap; }
+    .review-question { flex: 1; font-size: 15px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
+    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; white-space: nowrap; }
+    .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
+
+    /* Thank You */
     .thankyou-screen { display: none; text-align: center; padding: 80px 20px; }
     .thankyou-screen.active { display: block; }
-    .thankyou-screen h1 { font-family: var(--serif); font-size: 48px; font-weight: 500; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .thankyou-screen h1 { font-family: var(--serif); font-size: 48px; font-weight: 500; margin-bottom: 16px; }
     .thankyou-screen h1 em { font-style: italic; color: var(--accent, #6b1f1f); }
     .thankyou-screen .thankyou-desc { color: var(--ink-soft); font-size: 16px; line-height: 1.7; max-width: 560px; margin: 0 auto 32px; }
     .thankyou-next { margin-bottom: 40px; }
@@ -70,23 +83,13 @@
     .redirect-note span { color: var(--accent, #6b1f1f); font-weight: 500; }
     .thankyou-check { font-size: 64px; margin-bottom: 24px; color: var(--success, #3d5a3d); }
 
-    .review-pillar { margin-bottom: 28px; }
-    .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
-    .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
-    .review-item:last-child { border-bottom: none; }
-    .review-question { flex: 1; font-size: 14px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
-    .review-question span { color: var(--ink-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; margin-right: 6px; }
-    .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; }
-    .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
-
     @media (max-width: 600px) {
       .q-tooltip-text { width: 250px; font-size: 12px; }
-      .slider-wrap { padding: 0 8px; }
-      .slider-label { font-size: 10px; width: 64px; }
+      .slider-track-container, .slider-labels-row { padding: 0 20px; }
+      .slider-label-text { font-size: 9px; }
       .select-pill { padding: 9px 16px; font-size: 14px; }
       .question-card { padding: 1.5rem 1.2rem; }
       .question-inline { font-size: 15px; }
-      .slider-dot { width: 12px; height: 12px; }
     }
   </style>
 </head>
@@ -124,54 +127,37 @@
             const existingAnswer = responseMap[q.id] || '';
             let scaleLabels = [];
             try { scaleLabels = JSON.parse(q.scale_labels || '[]'); } catch(e) {}
-
             let mainText = q.question_text;
             let instruction = '';
             const instrMatch = mainText.match(/\((Select[^)]+)\)/i);
-            if (instrMatch) {
-              instruction = instrMatch[1];
-              mainText = mainText.replace(instrMatch[0], '').trim();
-            }
-
-            if (q.pillar !== currentPillar) {
-              currentPillar = q.pillar;
+            if (instrMatch) { instruction = instrMatch[1]; mainText = mainText.replace(instrMatch[0], '').trim(); }
+            if (q.pillar !== currentPillar) { currentPillar = q.pillar;
         %>
-          <div class="pillar-divider">
-            <h3 class="pillar-name"><%= currentPillar %></h3>
-          </div>
+          <div class="pillar-divider"><h3 class="pillar-name"><%= currentPillar %></h3></div>
         <% } %>
 
-          <div class="question-card" data-question-id="<%= q.id %>" data-question-num="<%= q.question_number %>" data-pillar="<%= q.pillar %>">
-            <p class="question-inline">
-              <span class="q-num">Q<%= q.question_number %>.</span>
-              <%= mainText %>
-              <% if (q.tooltip) { %>
-                <span class="q-tooltip-wrap">
-                  <span class="q-tooltip-icon">i</span>
-                  <span class="q-tooltip-text"><%= q.tooltip %></span>
-                </span>
-              <% } %>
-              <% if (instruction) { %>
-                <span class="question-instruction"><%= instruction %></span>
-              <% } %>
-            </p>
+          <div class="question-card" data-question-id="<%= q.id %>" data-question-num="<%= q.question_number %>" data-pillar="<%= q.pillar %>" data-question-text="<%= mainText %>">
+            <div class="question-text-wrap">
+              <span class="question-inline"><span class="q-num">Q<%= q.question_number %>.</span> <%= mainText %><% if (q.tooltip) { %><span class="q-tooltip-wrap"><span class="q-tooltip-icon">i</span><span class="q-tooltip-text"><%= q.tooltip %></span></span><% } %></span>
+              <% if (instruction) { %><span class="question-instruction"><%= instruction %></span><% } %>
+            </div>
 
             <% if (q.response_type === 'scale') { %>
               <div class="slider-group">
                 <input type="hidden" name="q_<%= q.id %>" id="slider_val_<%= q.id %>" value="<%= existingAnswer || '' %>">
                 <div class="slider-wrap" data-qid="<%= q.id %>">
-                  <div class="slider-track-bg">
-                    <div class="slider-fill" id="slider_fill_<%= q.id %>"></div>
-                    <div class="slider-dots">
-                      <% for (let i = 1; i <= 5; i++) { %>
-                        <span class="slider-dot" data-val="<%= i %>"></span>
-                      <% } %>
+                  <div class="slider-track-container">
+                    <div class="slider-track-bg">
+                      <div class="slider-fill" id="slider_fill_<%= q.id %>"></div>
+                      <div class="slider-dots">
+                        <% for (let i = 1; i <= 5; i++) { %><span class="slider-dot" data-val="<%= i %>"></span><% } %>
+                      </div>
+                      <div class="slider-thumb unset" id="slider_thumb_<%= q.id %>"></div>
                     </div>
-                    <div class="slider-thumb unset" id="slider_thumb_<%= q.id %>"></div>
                   </div>
-                  <div class="slider-labels">
+                  <div class="slider-labels-row">
                     <% for (let i = 0; i < 5; i++) { %>
-                      <span class="slider-label" data-val="<%= i+1 %>"><%= scaleLabels[i] || (i+1) %></span>
+                      <div class="slider-label-item"><span class="slider-label-text" data-val="<%= i+1 %>"><%= scaleLabels[i] || (i+1) %></span></div>
                     <% } %>
                   </div>
                 </div>
@@ -181,9 +167,7 @@
               <div class="select-group">
                 <% q.parsedOptions.forEach(function(opt) { %>
                   <label class="select-option">
-                    <input type="radio" name="q_<%= q.id %>" value="<%= opt %>"
-                      <%= existingAnswer === opt ? 'checked' : '' %>
-                      <%= isComplete ? 'disabled' : '' %>>
+                    <input type="radio" name="q_<%= q.id %>" value="<%= opt %>" <%= existingAnswer === opt ? 'checked' : '' %> <%= isComplete ? 'disabled' : '' %>>
                     <span class="select-pill"><%= opt %></span>
                   </label>
                 <% }); %>
@@ -196,9 +180,7 @@
                   try { checked = JSON.parse(existingAnswer || '[]').includes(opt); } catch(e) {}
                 %>
                   <label class="select-option">
-                    <input type="checkbox" name="q_<%= q.id %>" value="<%= opt %>"
-                      <%= checked ? 'checked' : '' %>
-                      <%= isComplete ? 'disabled' : '' %>>
+                    <input type="checkbox" name="q_<%= q.id %>" value="<%= opt %>" <%= checked ? 'checked' : '' %> <%= isComplete ? 'disabled' : '' %>>
                     <span class="select-pill"><%= opt %></span>
                   </label>
                 <% }); %>
@@ -208,18 +190,14 @@
         <% }); %>
 
         <% if (!isComplete) { %>
-          <div class="submit-section">
-            <button type="submit" class="btn-primary btn-submit" id="reviewBtn">REVIEW RESPONSES &rarr;</button>
-          </div>
+          <div class="submit-section"><button type="submit" class="btn-primary btn-submit" id="reviewBtn">REVIEW RESPONSES &rarr;</button></div>
         <% } else { %>
-          <div class="submit-section">
-            <a href="/dashboard" class="btn-primary">BACK TO DASHBOARD &rarr;</a>
-          </div>
+          <div class="submit-section"><a href="/dashboard" class="btn-primary">BACK TO DASHBOARD &rarr;</a></div>
         <% } %>
       </form>
     </div>
 
-    <!-- PHASE 2: Review -->
+    <!-- PHASE 2 -->
     <div id="reviewPhase" class="review-section">
       <div class="assessment-header" style="text-align:center;">
         <p class="intro-label">REVIEW YOUR RESPONSES</p>
@@ -233,7 +211,7 @@
       </div>
     </div>
 
-    <!-- PHASE 3: Thank You -->
+    <!-- PHASE 3 -->
     <div id="thankyouPhase" class="thankyou-screen">
       <div class="thankyou-check">✓</div>
       <p class="intro-label">YOUR PRIVATE RECORD</p>
@@ -255,37 +233,27 @@
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
 
-    // ---- SLIDER ----
+    // SLIDER
     document.querySelectorAll('.slider-wrap').forEach(wrap => {
       const qid = wrap.dataset.qid;
       const trackBg = wrap.querySelector('.slider-track-bg');
       const thumb = wrap.querySelector('.slider-thumb');
       const fill = wrap.querySelector('.slider-fill');
       const hiddenInput = document.getElementById('slider_val_' + qid);
-      const labels = wrap.querySelectorAll('.slider-label');
+      const labels = wrap.querySelectorAll('.slider-label-text');
       const dots = wrap.querySelectorAll('.slider-dot');
       let dragging = false;
 
       function setVal(val) {
         val = Math.max(1, Math.min(5, Math.round(val)));
         const pct = ((val - 1) / 4) * 100;
-        thumb.style.left = pct + '%';
-        fill.style.width = pct + '%';
-        thumb.classList.remove('unset');
-        hiddenInput.value = val;
+        thumb.style.left = pct + '%'; fill.style.width = pct + '%';
+        thumb.classList.remove('unset'); hiddenInput.value = val;
         labels.forEach((l, i) => l.classList.toggle('active', i === val - 1));
-        dots.forEach((d, i) => {
-          d.classList.toggle('filled', i < val);
-          d.classList.toggle('current', i === val - 1);
-        });
+        dots.forEach((d, i) => { d.classList.toggle('filled', i < val); d.classList.toggle('current', i === val - 1); });
         hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
       }
-
-      function getValFromX(clientX) {
-        const rect = trackBg.getBoundingClientRect();
-        const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-        return Math.round(pct * 4) + 1;
-      }
+      function getValFromX(x) { const r = trackBg.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(1, (x - r.left) / r.width)) * 4) + 1; }
 
       trackBg.addEventListener('mousedown', e => { setVal(getValFromX(e.clientX)); dragging = true; });
       trackBg.addEventListener('touchstart', e => { setVal(getValFromX(e.touches[0].clientX)); dragging = true; }, { passive: true });
@@ -295,111 +263,74 @@
       document.addEventListener('touchmove', e => { if (dragging) setVal(getValFromX(e.touches[0].clientX)); }, { passive: true });
       document.addEventListener('mouseup', () => { dragging = false; });
       document.addEventListener('touchend', () => { dragging = false; });
-
-      dots.forEach(dot => { dot.addEventListener('click', () => setVal(parseInt(dot.dataset.val))); });
-      labels.forEach(label => { label.addEventListener('click', () => setVal(parseInt(label.dataset.val))); });
-
+      dots.forEach(d => d.addEventListener('click', () => setVal(parseInt(d.dataset.val))));
+      labels.forEach(l => l.addEventListener('click', () => setVal(parseInt(l.dataset.val))));
       if (hiddenInput.value) setVal(parseInt(hiddenInput.value));
     });
 
-    // ---- PROGRESS ----
+    // PROGRESS
     function updateProgress() {
-      let answered = 0;
-      document.querySelectorAll('.question-card').forEach(card => {
-        const radios = card.querySelectorAll('input[type="radio"]:checked');
-        const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
-        const hs = card.querySelector('input[type="hidden"][id^="slider_val_"]');
-        if (radios.length > 0 || checkboxes.length > 0) answered++;
-        else if (hs && hs.value) answered++;
+      let a = 0;
+      document.querySelectorAll('.question-card').forEach(c => {
+        if (c.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').length > 0) a++;
+        else { const h = c.querySelector('input[type="hidden"][id^="slider_val_"]'); if (h && h.value) a++; }
       });
-      progressBar.style.width = Math.round((answered / totalQuestions) * 100) + '%';
-      progressText.textContent = answered + ' of ' + totalQuestions;
+      progressBar.style.width = Math.round((a / totalQuestions) * 100) + '%';
+      progressText.textContent = a + ' of ' + totalQuestions;
     }
-    form.addEventListener('change', updateProgress);
-    updateProgress();
+    form.addEventListener('change', updateProgress); updateProgress();
 
-    // ---- MULTI-SELECT LIMIT ----
+    // MULTI-SELECT LIMIT
     document.querySelectorAll('.question-card').forEach(card => {
-      const text = card.querySelector('.question-inline').textContent;
-      const match = text.match(/up to (\d+)/i);
-      if (match) {
-        const max = parseInt(match[1]);
-        const boxes = card.querySelectorAll('input[type="checkbox"]');
-        boxes.forEach(cb => {
-          cb.addEventListener('change', () => {
-            const checked = card.querySelectorAll('input[type="checkbox"]:checked').length;
-            boxes.forEach(c => { if (!c.checked) c.disabled = checked >= max; });
-          });
-        });
+      const t = (card.querySelector('.question-inline') || {}).textContent || '';
+      const m = t.match(/up to (\d+)/i);
+      if (m) { const max = parseInt(m[1]); const boxes = card.querySelectorAll('input[type="checkbox"]');
+        boxes.forEach(cb => { cb.addEventListener('change', () => { const n = card.querySelectorAll('input[type="checkbox"]:checked').length; boxes.forEach(c => { if (!c.checked) c.disabled = n >= max; }); }); });
       }
     });
 
-    // ---- AUTO-SCROLL ----
+    // AUTO-SCROLL
     const allCards = Array.from(document.querySelectorAll('.question-card'));
     allCards.forEach((card, idx) => {
-      card.querySelectorAll('input[type="radio"]').forEach(input => {
-        input.addEventListener('change', () => {
-          if (idx < allCards.length - 1) setTimeout(() => allCards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
-        });
-      });
+      card.querySelectorAll('input[type="radio"]').forEach(input => { input.addEventListener('change', () => { if (idx < allCards.length - 1) setTimeout(() => allCards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 400); }); });
     });
     document.querySelectorAll('.slider-wrap').forEach(wrap => {
-      const card = wrap.closest('.question-card');
-      const cidx = allCards.indexOf(card);
-      ['mouseup', 'touchend'].forEach(evt => {
-        wrap.addEventListener(evt, () => {
-          const hi = card.querySelector('input[type="hidden"]');
-          if (hi && hi.value && cidx < allCards.length - 1) setTimeout(() => allCards[cidx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
-        });
-      });
+      const card = wrap.closest('.question-card'); const ci = allCards.indexOf(card);
+      ['mouseup', 'touchend'].forEach(evt => { wrap.addEventListener(evt, () => { const h = card.querySelector('input[type="hidden"]'); if (h && h.value && ci < allCards.length - 1) setTimeout(() => allCards[ci + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }), 500); }); });
     });
 
-    // ---- COLLECT ANSWERS ----
+    // COLLECT
     function collectAnswers() {
-      const answers = {};
-      let allAnswered = true;
-      document.querySelectorAll('.question-card').forEach(card => {
-        const qId = card.dataset.questionId;
-        const radios = card.querySelectorAll('input[type="radio"]:checked');
-        const checkboxes = card.querySelectorAll('input[type="checkbox"]:checked');
-        const hs = card.querySelector('input[type="hidden"][id^="slider_val_"]');
-        if (radios.length > 0) answers[qId] = radios[0].value;
-        else if (checkboxes.length > 0) answers[qId] = Array.from(checkboxes).map(cb => cb.value);
-        else if (hs && hs.value) answers[qId] = hs.value;
-        else { allAnswered = false; card.classList.add('unanswered'); }
+      const answers = {}; let allOk = true;
+      document.querySelectorAll('.question-card').forEach(c => {
+        const q = c.dataset.questionId;
+        const r = c.querySelectorAll('input[type="radio"]:checked');
+        const ch = c.querySelectorAll('input[type="checkbox"]:checked');
+        const h = c.querySelector('input[type="hidden"][id^="slider_val_"]');
+        if (r.length) answers[q] = r[0].value;
+        else if (ch.length) answers[q] = Array.from(ch).map(x => x.value);
+        else if (h && h.value) answers[q] = h.value;
+        else { allOk = false; c.classList.add('unanswered'); }
       });
-      return { answers, allAnswered };
+      return { answers, allAnswered: allOk };
     }
 
     <% if (!isComplete) { %>
+    // PHASE 1 → 2
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       document.querySelectorAll('.unanswered').forEach(el => el.classList.remove('unanswered'));
       const { answers, allAnswered } = collectAnswers();
-      if (!allAnswered) {
-        const first = document.querySelector('.unanswered');
-        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        alert('Please answer all questions before reviewing.');
-        return;
-      }
+      if (!allAnswered) { const f = document.querySelector('.unanswered'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'center' }); alert('Please answer all questions before reviewing.'); return; }
 
       const cards = document.querySelectorAll('.question-card');
       const pillars = {};
       cards.forEach(card => {
-        const pillar = card.dataset.pillar;
-        const qNum = card.dataset.questionNum;
-        const inlineEl = card.querySelector('.question-inline');
-        let qText = inlineEl.textContent.replace(/Q[0-9]+\./, "").replace(/\bi\b$/, "").trim();
-
-
-        qText = qText.trim();
-        const qId = card.dataset.questionId;
+        const pillar = card.dataset.pillar, qNum = card.dataset.questionNum, qId = card.dataset.questionId;
+        const qText = card.dataset.questionText || '';
         let answer = answers[qId];
-        const sliderLabels = card.querySelectorAll('.slider-label');
-        if (sliderLabels.length > 0 && !isNaN(answer)) {
-          const lbl = sliderLabels[parseInt(answer) - 1];
-          if (lbl) answer = answer + ' — ' + lbl.textContent.trim();
-        }
+        const sLabels = card.querySelectorAll('.slider-label-text');
+        if (sLabels.length > 0 && !isNaN(answer)) { const lbl = sLabels[parseInt(answer) - 1]; if (lbl) answer = answer + ' — ' + lbl.textContent.trim(); }
         if (Array.isArray(answer)) answer = answer.join(', ');
         if (!pillars[pillar]) pillars[pillar] = [];
         pillars[pillar].push({ qNum, qText, answer });
@@ -409,7 +340,7 @@
       for (const [pillar, items] of Object.entries(pillars)) {
         html += '<div class="review-pillar"><div class="review-pillar-name">' + pillar + '</div>';
         items.forEach(item => {
-          html += '<div class="review-item"><div class="review-question"><span>Q' + item.qNum + '.</span> ' + item.qText + '</div><div class="review-answer">' + item.answer + '</div></div>';
+          html += '<div class="review-item"><span class="review-q-num">Q' + item.qNum + '.</span><div class="review-question">' + item.qText + '</div><div class="review-answer">' + item.answer + '</div></div>';
         });
         html += '</div>';
       }
@@ -419,22 +350,16 @@
       window.scrollTo({ top: 0, behavior: 'instant' });
     });
 
-    function goBackToEdit() {
-      document.getElementById('reviewPhase').classList.remove('active');
-      document.getElementById('questionPhase').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
+    function goBackToEdit() { document.getElementById('reviewPhase').classList.remove('active'); document.getElementById('questionPhase').style.display = 'block'; window.scrollTo({ top: 0, behavior: 'instant' }); }
 
     async function submitFinal() {
-      const btn = document.getElementById('finalSubmitBtn');
-      btn.disabled = true; btn.textContent = 'SUBMITTING...';
+      const btn = document.getElementById('finalSubmitBtn'); btn.disabled = true; btn.textContent = 'SUBMITTING...';
       const { answers } = collectAnswers();
       try {
         const res = await fetch('/module/<%= module.module_number %>/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers }) });
         const data = await res.json();
         if (data.success) {
-          document.getElementById('reviewPhase').classList.remove('active');
-          document.getElementById('thankyouPhase').classList.add('active');
+          document.getElementById('reviewPhase').classList.remove('active'); document.getElementById('thankyouPhase').classList.add('active');
           window.scrollTo({ top: 0, behavior: 'instant' });
           let s = 5; const c = document.getElementById('countdown');
           const t = setInterval(() => { s--; c.textContent = s; if (s <= 0) { clearInterval(t); window.location.href = '/dashboard'; } }, 1000);
