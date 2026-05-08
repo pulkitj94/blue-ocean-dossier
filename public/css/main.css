@@ -38,9 +38,13 @@ a { color: inherit; text-decoration: none; }
    LOGIN PAGE
    ============================================ */
 .login-page {
-  background: var(--ivory);
+  background: #060e1a;
   min-height: 100vh;
 }
+
+
+
+
 
 .login-wrap {
   min-height: 100vh;
@@ -49,7 +53,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .login-brand {
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   color: var(--ivory);
   padding: 64px 72px;
   display: flex;
@@ -58,11 +62,19 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   overflow: hidden;
 }
+.login-brand-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
 .login-brand::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 80% 20%, rgba(184, 146, 74, 0.15) 0%, transparent 40%);
+  background: radial-gradient(circle at 80% 20%, rgba(29, 158, 117, 0.12) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(56, 138, 221, 0.08) 0%, transparent 40%);
 }
 
 .brand-mark {
@@ -94,7 +106,7 @@ a { color: inherit; text-decoration: none; }
   position: relative;
 }
 .brand-headline em {
-  color: var(--gold);
+  color: #5DCAA5;
   font-style: italic;
 }
 
@@ -193,7 +205,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 14px;
   padding: 16px 32px;
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   color: var(--ivory);
   font-family: var(--sans);
   font-size: 12px;
@@ -205,7 +217,7 @@ a { color: inherit; text-decoration: none; }
   transition: all 0.2s;
   margin-top: 8px;
 }
-.btn:hover { background: var(--accent); transform: translateY(-1px); }
+.btn:hover { background: #1D9E75; color: #fff; transform: translateY(-1px); }
 .btn-arrow { font-size: 14px; transition: transform 0.2s; }
 .btn:hover .btn-arrow { transform: translateX(4px); }
 
@@ -223,7 +235,7 @@ a { color: inherit; text-decoration: none; }
    SITE HEADER (Dashboard)
    ============================================ */
 .dash-header {
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   color: var(--ivory);
   padding: 20px 48px;
   display: flex;
@@ -266,7 +278,7 @@ a { color: inherit; text-decoration: none; }
 .dash-logout:hover { color: var(--gold); }
 
 /* Aliases for EJS templates using old class names */
-.site-header { background: var(--ink); color: var(--ivory); padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); }
+.site-header { background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%); color: var(--ivory); padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); }
 .header-left { display: flex; align-items: baseline; gap: 32px; }
 .header-brand { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
 .header-tagline { font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 400; color: var(--ivory); }
@@ -375,7 +387,7 @@ a { color: inherit; text-decoration: none; }
 
 .module-card.module-featured {
   grid-column: span 8;
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   color: var(--ivory);
   padding: 44px;
 }
@@ -514,7 +526,7 @@ a { color: inherit; text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   padding: 0.7rem 1.5rem;
   margin: 0 -3rem 2rem;
   display: flex;
@@ -605,7 +617,7 @@ a { color: inherit; text-decoration: none; }
 }
 .scale-option input:checked + .scale-circle,
 .scale-circle.selected {
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   border-color: var(--ink);
   color: var(--ivory);
   font-weight: 500;
@@ -626,7 +638,7 @@ a { color: inherit; text-decoration: none; }
 }
 .select-option input:checked + .select-pill,
 .select-pill.selected {
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   color: var(--ivory);
   border-color: var(--ink);
 }
@@ -649,7 +661,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 14px;
   padding: 16px 32px;
-  background: var(--ink);
+  background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   color: var(--ivory);
   font-family: var(--sans);
   font-size: 12px;
