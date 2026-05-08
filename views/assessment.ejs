@@ -77,12 +77,13 @@
 </head>
 <body class="assessment-page">
   <header class="site-header">
-    <div class="header-left">
+    <div class="header-left" style="display:flex;align-items:center;gap:16px;">
+      <img src="/images/YPO-SA-Blue-Ocean-Regional_Horizontal_White.png" alt="YPO" style="height:70px;opacity:0.9;">
       <a href="/dashboard" class="header-back">&larr; Dashboard</a>
-      <img src="/images/YPO-SA-Blue-Ocean-Regional_Horizontal_White.png" alt="YPO" style="height:44px;opacity:0.9;">
     </div>
-    <div class="header-right">
-      <span class="header-dossier">User ID <strong><%= user.username %></strong></span><img src="/images/blueocean-logo-white.png" alt="Blue Ocean" style="height:30px;opacity:0.9;margin-left:16px;">
+    <div class="header-right" style="display:flex;align-items:center;gap:20px;">
+      <span class="header-dossier">User ID <strong><%= user.username %></strong></span>
+      <img src="/images/blueocean-logo-white.png" alt="Blue Ocean" style="height:50px;opacity:0.9;margin-left:16px;">
     </div>
   </header>
 
