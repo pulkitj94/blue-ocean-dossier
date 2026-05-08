@@ -13,13 +13,13 @@
     .question-card { text-align: center; padding: 2rem 2.5rem; scroll-margin-top: 100px; }
     .pillar-divider { text-align: center; }
     .question-text-wrap { text-align: center; margin-bottom: 20px; }
-    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink, #1a1916); display: inline; }
-    .question-inline .q-num { font-size: 16px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; }
-    .question-instruction { display: block; font-size: 13px; color: var(--ink-muted, #8a857c); font-style: italic; margin-top: 6px; text-align: center; }
+    .question-inline { font-size: 16px; line-height: 1.65; color: var(--ink-soft, #4a4640); display: inline; }
+    .question-inline .q-num { font-size: 16px; font-weight: 600; color: var(--ink-soft, #4a4640); margin-right: 8px; }
+    .question-instruction { display: block; font-size: 13px; color: var(--ink-soft, #4a4640); font-style: italic; margin-top: 6px; text-align: center; }
     .q-tooltip-wrap { position: relative; display: inline; margin-left: 3px; cursor: help; }
     .q-tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gold, #b8924a); color: #fff; font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 600; vertical-align: middle; position: relative; top: -1px; transition: transform 0.2s; }
     .q-tooltip-wrap:hover .q-tooltip-icon { transform: scale(1.1); }
-    .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); width: 320px; background: var(--ink, #1a1916); color: var(--ivory, #f4f1ea); font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.65; padding: 16px 18px; border-radius: 6px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; }
+    .q-tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); width: 320px; background: var(--ink, #1a1916); color: #fff; font-family: var(--sans, Inter, sans-serif); font-size: 13px; font-weight: 400; line-height: 1.65; padding: 16px 18px; border-radius: 6px; z-index: 100; transition: opacity 0.2s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: left; }
     .q-tooltip-text::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--ink, #1a1916); }
     .q-tooltip-wrap:hover .q-tooltip-text { visibility: visible; opacity: 1; }
 
@@ -34,7 +34,7 @@
     .slider-dot.filled { background: var(--ink, #1a1916); border-color: var(--ink); }
     .slider-dot.current { background: #fff; border-color: var(--ink, #1a1916); border-width: 3px; }
     .slider-labels-row { position: relative; height: 36px; margin-top: 10px; }
-    .slider-label-abs { position: absolute; transform: translateX(-50%); font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-muted, #8a857c); text-align: center; width: 88px; line-height: 1.3; cursor: pointer; transition: all 0.2s; }
+    .slider-label-abs { position: absolute; transform: translateX(-50%); font-family: var(--sans, Inter, sans-serif); font-size: 11px; color: var(--ink-soft, #4a4640); text-align: center; width: 88px; line-height: 1.3; cursor: pointer; transition: all 0.2s; }
     .slider-label-abs.active { color: var(--ink, #1a1916); font-weight: 600; }
 
     .select-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 12px 0; }
@@ -48,7 +48,7 @@
     .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--accent, #6b1f1f); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
     .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
     .review-item:last-child { border-bottom: none; }
-    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-muted, #8a857c); margin-right: 8px; white-space: nowrap; }
+    .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-soft, #4a4640); margin-right: 8px; white-space: nowrap; }
     .review-question { flex: 1; font-size: 15px; color: var(--ink-soft); line-height: 1.5; padding-right: 20px; }
     .review-answer { font-weight: 500; color: var(--ink); font-size: 14px; min-width: 140px; text-align: right; }
     .review-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
@@ -78,12 +78,15 @@
 <body class="assessment-page">
   <header class="site-header">
     <div class="header-left" style="display:flex;align-items:center;gap:16px;">
-      <img src="/images/YPO-SA-Blue-Ocean-Regional_Horizontal_White.png" alt="YPO" style="height:90px;opacity:0.9;">
+      <img src="/images/YPO-SA-Blue-Ocean-Regional_Horizontal_White.png" alt="YPO" style="height:110px;opacity:0.9;">
       <a href="/dashboard" class="header-back">&larr; Dashboard</a>
     </div>
     <div class="header-right" style="display:flex;align-items:center;gap:20px;">
-      <span class="header-dossier">User ID <strong><%= user.username %></strong></span>
-      <img src="/images/blueocean-logo-white.png" alt="Blue Ocean" style="height:50px;opacity:0.9;margin-left:16px;">
+      <div style="text-align:right;">
+        <span class="header-dossier">User ID <strong><%= user.username %></strong></span><br>
+        <a href="/logout" class="header-signout">Sign out</a>
+      </div>
+      <img src="/images/blueocean-logo-white.png" alt="Blue Ocean" style="height:55px;opacity:0.9;">
     </div>
   </header>
 

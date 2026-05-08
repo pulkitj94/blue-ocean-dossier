@@ -21,9 +21,9 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
 body {
-  background: var(--ivory);
+  min-height: 100vh;
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 15px;
@@ -70,6 +70,7 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  padding-top: 18vh;
 }
 .login-brand::after {
   content: '';
@@ -279,7 +280,7 @@ a { color: inherit; text-decoration: none; }
 .dash-logout:hover { color: var(--gold); }
 
 /* Aliases for EJS templates using old class names */
-.site-header { background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%); color: var(--ivory); padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); }
+.site-header { background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%); color: var(--ivory); padding: 6px 56px 8px 4px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); position: sticky; top: 0; z-index: 100; }
 .header-left { display: flex; align-items: baseline; gap: 32px; }
 .header-brand { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
 .header-tagline { font-family: var(--serif); font-size: 16px; font-style: italic; font-weight: 400; color: var(--ivory); }
@@ -295,7 +296,7 @@ a { color: inherit; text-decoration: none; }
    DASHBOARD
    ============================================ */
 .dashboard-page {
-  background: var(--ivory);
+  background: var(--paper);
   background-image:
     radial-gradient(ellipse at top left, rgba(184, 146, 74, 0.04) 0%, transparent 50%),
     radial-gradient(ellipse at bottom right, rgba(107, 31, 31, 0.03) 0%, transparent 60%);
@@ -400,7 +401,7 @@ a { color: inherit; text-decoration: none; }
 .module-card.module-featured .module-link:hover { gap: 14px; }
 
 .module-card.locked {
-  opacity: 0.5;
+  opacity: 0.75;
   cursor: not-allowed;
 }
 
@@ -428,7 +429,7 @@ a { color: inherit; text-decoration: none; }
 .badge-complete { background: var(--success); color: var(--ivory); }
 .badge-ready { background: var(--accent); color: var(--ivory); }
 .badge-progress { background: var(--gold); color: var(--ink); }
-.badge-locked { background: var(--rule); color: var(--ink-soft); }
+.badge-locked { background: var(--ink); color: var(--ivory); }
 
 .module-title {
   font-family: var(--serif);
@@ -478,8 +479,8 @@ a { color: inherit; text-decoration: none; }
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ink-muted);
-  border-bottom: 1px solid var(--ink-muted);
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--gold);
   padding-bottom: 4px;
   display: inline-block;
 }
@@ -488,7 +489,10 @@ a { color: inherit; text-decoration: none; }
    ASSESSMENT PAGE
    ============================================ */
 .assessment-page {
-  background: var(--ivory);
+  background: var(--paper);
+  background-image: 
+    radial-gradient(ellipse at top left, rgba(29, 158, 117, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(10, 22, 40, 0.03) 0%, transparent 60%);
   min-height: 100vh;
 }
 
@@ -525,7 +529,7 @@ a { color: inherit; text-decoration: none; }
 /* Progress */
 .progress-container {
   position: sticky;
-  top: 0;
+  top: 120px;
   z-index: 10;
   background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2a45 70%, #0a1628 100%);
   padding: 0.7rem 1.5rem;
