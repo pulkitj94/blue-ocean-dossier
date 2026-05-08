@@ -29,7 +29,7 @@
 
     <div id="createForm" class="form-panel" style="display:none;">
       <h3>Create New Respondent</h3>
-      <p style="font-size:0.8rem;color:#6c757d;margin-bottom:1rem;">Dossier number (BO-XXX-2026) and passcode are auto-generated.</p>
+      <p style="font-size:0.8rem;color:#6c757d;margin-bottom:1rem;">User ID (BO-XXX-2026) and passcode are auto-generated.</p>
       <div class="form-row">
         <div class="form-col">
           <label>First Name *</label>
@@ -64,7 +64,7 @@
 
       <div id="credentialsDisplay" style="display:none;" class="credentials-box">
         <h4>✅ User Created — Share these credentials:</h4>
-        <p><strong>Dossier Number:</strong> <span id="createdUsername"></span></p>
+        <p><strong>User ID:</strong> <span id="createdUsername"></span></p>
         <p><strong>Passcode:</strong> <span id="createdPassword"></span></p>
         <p><strong>Email:</strong> <span id="createdEmail"></span></p>
         <button class="btn-admin small" onclick="copyCredentials()">Copy to Clipboard</button>
@@ -148,7 +148,7 @@
 
     <div id="passcodeDisplay" class="credentials-box" style="display:none;margin-top:1rem;">
       <h4>🔑 New Passcode Generated</h4>
-      <p><strong>Dossier Number:</strong> <span id="resetUsername"></span></p>
+      <p><strong>User ID:</strong> <span id="resetUsername"></span></p>
       <p><strong>New Passcode:</strong> <span id="resetPasscode"></span></p>
       <button class="btn-admin small" onclick="copyResetCredentials()">Copy to Clipboard</button>
     </div>
@@ -197,13 +197,13 @@
     function copyCredentials() {
       const u = document.getElementById('createdUsername').textContent;
       const p = document.getElementById('createdPassword').textContent;
-      navigator.clipboard.writeText('Dossier Number: ' + u + '\nPasscode: ' + p + '\nLink: https://blue-ocean-dossier.vercel.app');
+      navigator.clipboard.writeText('User ID: ' + u + '\nPasscode: ' + p + '\nLink: https://blue-ocean-dossier.vercel.app');
       alert('Credentials copied!');
     }
 
     async function sendInvite(id, username, email) {
       if (!email) { alert('No email address for this user. Edit the user to add one.'); return; }
-      if (!confirm('Send invite email to ' + email + '?')) return;
+      if (!confirm("Send invite email to " + email + "?\n\nNote: This will generate a new passcode. The previous passcode will no longer work.")) return;
       const res = await fetch('/admin/users/' + id + '/send-invite', { method: 'POST' });
       const data = await res.json();
       const box = document.getElementById('inviteStatus');
@@ -233,7 +233,7 @@
     function copyResetCredentials() {
       const u = document.getElementById('resetUsername').textContent;
       const p = document.getElementById('resetPasscode').textContent;
-      navigator.clipboard.writeText('Dossier Number: ' + u + '\nPasscode: ' + p + '\nLink: https://blue-ocean-dossier.vercel.app');
+      navigator.clipboard.writeText('User ID: ' + u + '\nPasscode: ' + p + '\nLink: https://blue-ocean-dossier.vercel.app');
       alert('Credentials copied!');
     }
 

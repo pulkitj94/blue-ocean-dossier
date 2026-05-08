@@ -26,7 +26,7 @@
     <div class="login-form-panel">
       <div class="form-label">Member Access</div>
       <h2 class="form-title">Enter your <em>private dossier</em></h2>
-      <p class="form-description">Members of YPO Blue Ocean have been issued an individual dossier number and passcode. Enter both to access your personal AI maturity report, canvas, and 90-day plan.</p>
+      <p class="form-description">Members of YPO Blue Ocean have been issued an individual User ID and passcode. Enter both to access your personal AI maturity report, canvas, and 90-day plan.</p>
 
       <% if (error) { %>
         <div class="error-msg show"><%= error %></div>
@@ -34,7 +34,7 @@
 
       <form method="POST" action="/login">
         <div class="input-group">
-          <label>Dossier Number</label>
+          <label>User ID</label>
           <input type="text" name="username" class="input-field" placeholder="······" required autocomplete="username">
         </div>
         <div class="input-group">

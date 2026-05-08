@@ -58,7 +58,7 @@ router.post('/users/create', requireAdmin, asyncHandler(async (req, res) => {
     }
     res.json({ success: true, user: { id: result.lastInsertRowid, username: finalUsername, password: finalPassword, first_name, last_name, email } });
   } catch(err) {
-    if (err.message && (err.message.includes('unique') || err.message.includes('duplicate'))) res.status(400).json({ error: 'Dossier number collision — try again' });
+    if (err.message && (err.message.includes('unique') || err.message.includes('duplicate'))) res.status(400).json({ error: 'User ID collision — try again' });
     else res.status(500).json({ error: err.message });
   }
 }));
@@ -106,7 +106,7 @@ router.post('/users/:id/send-invite', requireAdmin, asyncHandler(async (req, res
         
         
         <div style="background: #1a1916; color: #f4f1ea; padding: 24px 32px; margin: 24px 0; font-family: monospace; font-size: 14px; line-height: 2;">
-          <div><strong style="color: #b8924a;">Your dossier number:</strong> ${user.username}</div>
+          <div><strong style="color: #b8924a;">Your User ID:</strong> ${user.username}</div>
           <div><strong style="color: #b8924a;">Your access code:</strong> ${newPasscode}</div>
           <div><strong style="color: #b8924a;">Your private link:</strong> <a href="${appUrl}" style="color: #b8924a;">${appUrl}</a></div>
         </div>
