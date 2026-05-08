@@ -190,6 +190,20 @@ router.put('/questions/:id', requireAdmin, asyncHandler(async (req, res) => {
   } catch(err) { res.status(500).json({ error: err.message }); }
 }));
 
+
+router.post("/questions/:id/move", requireAdmin, asyncHandler(async (req, res) => {
+  const db = getDB();
+  const { direction } = req.body;
+  const q = await db.prepare("SELECT * FROM questions WHERE id = ?").get(parseInt(req.params.id));
+  if (!q) return res.status(404).json({ error: "Not found" });
+  const neighbor = direction === "up"
+    ? await db.prepare("SELECT * FROM questions WHERE module_id = ? AND sort_order < ? ORDER BY sort_order DESC LIMIT 1").get(q.module_id, q.sort_order)
+    : await db.prepare("SELECT * FROM questions WHERE module_id = ? AND sort_order > ? ORDER BY sort_order ASC LIMIT 1").get(q.module_id, q.sort_order);
+  if (!neighbor) return res.json({ success: false, error: "Cannot move further" });
+  await db.prepare("UPDATE questions SET sort_order = ?, question_number = ? WHERE id = ?").run(neighbor.sort_order, neighbor.question_number, q.id);
+  await db.prepare("UPDATE questions SET sort_order = ?, question_number = ? WHERE id = ?").run(q.sort_order, q.question_number, neighbor.id);
+  res.json({ success: true });
+}));
 router.delete('/questions/:id', requireAdmin, asyncHandler(async (req, res) => {
   const db = getDB();
   await db.prepare('DELETE FROM questions WHERE id = ?').run(parseInt(req.params.id));
