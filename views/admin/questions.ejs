@@ -7,6 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    .question-cell { max-width: 280px; }
+    .tooltip-cell { max-width: 200px; font-size: 0.8rem; color: #888; }
+    .inactive-row { opacity: 0.5; }
+    .edit-panel { background: #f8f8f8; border: 1px solid #ddd; padding: 1.5rem; margin-top: 1rem; border-radius: 6px; }
+    .edit-panel h3 { margin-bottom: 1rem; }
+    textarea.full-width { width: 100%; padding: 0.5rem; font-family: inherit; font-size: 0.9rem; border: 1px solid #ddd; border-radius: 4px; resize: vertical; }
+  </style>
 </head>
 <body>
   <nav class="admin-nav">
@@ -76,9 +84,75 @@
           <input type="text" id="qScoring" placeholder="Yes=5, Partially=3, No=1">
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Tooltip (help text shown on hover)</label>
+          <textarea id="qTooltip" rows="2" placeholder="e.g. A written plan approved by leadership..."></textarea>
+        </div>
+      </div>
+      <div class="form-row" id="scaleLabelsRow">
+        <div class="form-col full">
+          <label>Scale Labels (comma-separated, 5 values for scale questions)</label>
+          <input type="text" id="qScaleLabels" placeholder="No plan, Early discussions, Strategy drafted, Partially integrated, Fully integrated">
+        </div>
+      </div>
       <div class="form-actions">
         <button class="btn-admin" onclick="addQuestion()">Add Question</button>
         <button class="btn-admin secondary" onclick="document.getElementById('addForm').style.display='none'">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Edit Question Panel -->
+    <div id="editPanel" class="edit-panel" style="display:none;">
+      <h3>Edit Question: <span id="editQNum"></span></h3>
+      <input type="hidden" id="editId">
+      <div class="form-row">
+        <div class="form-col">
+          <label>Pillar / Category</label>
+          <input type="text" id="editPillar">
+        </div>
+        <div class="form-col">
+          <label>Response Type</label>
+          <select id="editType" onchange="toggleEditOptions()">
+            <option value="scale">Scale 1-5</option>
+            <option value="single_select">Single Select</option>
+            <option value="multi_select">Multi Select</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Question Text</label>
+          <textarea id="editText" rows="2" class="full-width"></textarea>
+        </div>
+      </div>
+      <div class="form-row" id="editOptionsRow">
+        <div class="form-col full">
+          <label>Options (comma-separated)</label>
+          <input type="text" id="editOptions">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Scoring Logic</label>
+          <input type="text" id="editScoring">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col full">
+          <label>Tooltip (help text shown on hover)</label>
+          <textarea id="editTooltip" rows="3" class="full-width"></textarea>
+        </div>
+      </div>
+      <div class="form-row" id="editScaleLabelsRow">
+        <div class="form-col full">
+          <label>Scale Labels (comma-separated, 5 values)</label>
+          <input type="text" id="editScaleLabels" placeholder="No plan, Early discussions, Strategy drafted, Partially integrated, Fully integrated">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-admin" onclick="saveEdit()">Save Changes</button>
+        <button class="btn-admin secondary" onclick="document.getElementById('editPanel').style.display='none'">Cancel</button>
       </div>
     </div>
 
@@ -90,6 +164,7 @@
             <th>#</th>
             <th>Pillar</th>
             <th>Question</th>
+            <th>Tooltip</th>
             <th>Type</th>
             <th>Options</th>
             <th>Active</th>
@@ -102,10 +177,12 @@
               <td>Q<%= q.question_number %></td>
               <td><%= q.pillar %></td>
               <td class="question-cell"><%= q.question_text %></td>
+              <td class="tooltip-cell"><%= q.tooltip ? q.tooltip.substring(0, 60) + (q.tooltip.length > 60 ? '...' : '') : '—' %></td>
               <td><code><%= q.response_type %></code></td>
               <td class="options-cell"><%= q.parsedOptions.length > 0 ? q.parsedOptions.join(', ') : '1-5 scale' %></td>
               <td><%= q.is_active ? '✅' : '❌' %></td>
               <td>
+                <button class="btn-admin small" onclick='editQuestion(<%- JSON.stringify({id:q.id, num:q.question_number, pillar:q.pillar, text:q.question_text, type:q.response_type, options:q.parsedOptions.join(", "), scoring:q.scoring_logic||"", tooltip:q.tooltip||"", scaleLabels:q.scale_labels||""}) %>)'>Edit</button>
                 <button class="btn-admin small" onclick="toggleActive(<%= q.id %>, <%= q.is_active %>)">
                   <%= q.is_active ? 'Disable' : 'Enable' %>
                 </button>
@@ -120,15 +197,24 @@
 
   <script>
     function showAddForm() { document.getElementById('addForm').style.display = 'block'; }
-    
+
     function toggleOptions() {
       const type = document.getElementById('qType').value;
       document.getElementById('optionsRow').style.display = type === 'scale' ? 'none' : 'block';
+      document.getElementById('scaleLabelsRow').style.display = type === 'scale' ? 'block' : 'none';
+    }
+
+    function toggleEditOptions() {
+      const type = document.getElementById('editType').value;
+      document.getElementById('editOptionsRow').style.display = type === 'scale' ? 'none' : 'block';
+      document.getElementById('editScaleLabelsRow').style.display = type === 'scale' ? 'block' : 'none';
     }
 
     async function addQuestion() {
       const optionsStr = document.getElementById('qOptions').value;
       const options = optionsStr ? optionsStr.split(',').map(s => s.trim()) : [];
+      const scaleLabelsStr = document.getElementById('qScaleLabels').value;
+      const scaleLabels = scaleLabelsStr ? JSON.stringify(scaleLabelsStr.split(',').map(s => s.trim())) : '';
 
       const body = {
         module_id: parseInt(document.getElementById('qModule').value),
@@ -138,6 +224,8 @@
         response_type: document.getElementById('qType').value,
         options: JSON.stringify(options),
         scoring_logic: document.getElementById('qScoring').value,
+        tooltip: document.getElementById('qTooltip').value,
+        scale_labels: scaleLabels,
       };
 
       const res = await fetch('/admin/questions/create', {
@@ -145,24 +233,71 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-
       const data = await res.json();
       if (data.success) location.reload();
       else alert(data.error || 'Failed to add question');
     }
 
-    async function toggleActive(id, current) {
-      await fetch(`/admin/questions/${id}`, {
+    function editQuestion(q) {
+      document.getElementById('editId').value = q.id;
+      document.getElementById('editQNum').textContent = 'Q' + q.num;
+      document.getElementById('editPillar').value = q.pillar;
+      document.getElementById('editText').value = q.text;
+      document.getElementById('editType').value = q.type;
+      document.getElementById('editOptions').value = q.options;
+      document.getElementById('editScoring').value = q.scoring;
+      document.getElementById('editTooltip').value = q.tooltip;
+
+      // Parse scale labels
+      let labels = '';
+      try { labels = JSON.parse(q.scaleLabels || '[]').join(', '); } catch(e) { labels = q.scaleLabels || ''; }
+      document.getElementById('editScaleLabels').value = labels;
+
+      toggleEditOptions();
+      document.getElementById('editPanel').style.display = 'block';
+      document.getElementById('editPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function saveEdit() {
+      const id = document.getElementById('editId').value;
+      const type = document.getElementById('editType').value;
+      const optionsStr = document.getElementById('editOptions').value;
+      const options = optionsStr ? optionsStr.split(',').map(s => s.trim()) : [];
+      const scaleLabelsStr = document.getElementById('editScaleLabels').value;
+      const scaleLabels = scaleLabelsStr ? JSON.stringify(scaleLabelsStr.split(',').map(s => s.trim())) : '';
+
+      const body = {
+        pillar: document.getElementById('editPillar').value,
+        question_text: document.getElementById('editText').value,
+        response_type: type,
+        options: JSON.stringify(options),
+        scoring_logic: document.getElementById('editScoring').value,
+        tooltip: document.getElementById('editTooltip').value,
+        scale_labels: scaleLabels,
+      };
+
+      const res = await fetch('/admin/questions/' + id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: current ? 0 : 1, pillar: '', question_text: '', response_type: '', options: '[]' })
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.success) location.reload();
+      else alert(data.error || 'Failed to update');
+    }
+
+    async function toggleActive(id, current) {
+      await fetch('/admin/questions/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: current ? 0 : 1 })
       });
       location.reload();
     }
 
     async function deleteQuestion(id) {
       if (!confirm('Delete this question? Existing responses will remain.')) return;
-      await fetch(`/admin/questions/${id}`, { method: 'DELETE' });
+      await fetch('/admin/questions/' + id, { method: 'DELETE' });
       location.reload();
     }
   </script>

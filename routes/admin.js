@@ -178,13 +178,13 @@ router.post('/questions/create', requireAdmin, asyncHandler(async (req, res) => 
 
 router.put('/questions/:id', requireAdmin, asyncHandler(async (req, res) => {
   const db = getDB();
-  const { pillar, question_text, response_type, options, scoring_logic, is_active } = req.body;
+  const { pillar, question_text, response_type, options, scoring_logic, is_active, tooltip, scale_labels } = req.body;
   try {
     if (is_active !== undefined && !question_text) {
       await db.prepare('UPDATE questions SET is_active = ? WHERE id = ?').run(is_active, parseInt(req.params.id));
     } else {
       const optionsStr = typeof options === 'string' ? options : JSON.stringify(options || []);
-      await db.prepare('UPDATE questions SET pillar=?, question_text=?, response_type=?, options=?, scoring_logic=?, is_active=? WHERE id=?').run(pillar, question_text, response_type, optionsStr, scoring_logic||'', is_active !== undefined ? is_active : 1, parseInt(req.params.id));
+      await db.prepare('UPDATE questions SET pillar=?, question_text=?, response_type=?, options=?, scoring_logic=?, tooltip=?, scale_labels=?, is_active=? WHERE id=?').run(pillar, question_text, response_type, optionsStr, scoring_logic||'', tooltip||'', scale_labels||'', is_active !== undefined ? is_active : 1, parseInt(req.params.id));
     }
     res.json({ success: true });
   } catch(err) { res.status(500).json({ error: err.message }); }
