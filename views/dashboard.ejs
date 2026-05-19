@@ -48,7 +48,7 @@
       <% modules.forEach(function(mod, index) { %>
         <div class="module-card <%= index === 0 ? 'module-featured' : '' %> <%= mod.status === 'locked' ? 'locked' : '' %>">
           <div class="module-header">
-            <span class="module-label">Module <%= String(mod.module_number).padStart(2, '0') %> &middot; <%= mod.subtitle %></span>
+            <span class="module-label">Module <%= String(mod.module_number).padStart(2, '0') %><br><%= mod.subtitle %></span>
             <% if (mod.status === 'complete') { %>
               <span class="badge badge-complete">Complete</span>
             <% } else if (mod.status === 'in_progress') { %>
