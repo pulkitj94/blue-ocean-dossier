@@ -45,7 +45,7 @@
 
     .review-section { display: none; } .review-section.active { display: block; }
     .review-pillar { margin-bottom: 28px; }
-    .review-pillar-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--ink, #1a1916); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
+    .review-pillar-name { font-family: var(--mono); font-size: 14px; letter-spacing: 0.3em; color: var(--ink, #1a1916); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-soft, #ddd6c4); text-align: left; }
     .review-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); text-align: left; }
     .review-item:last-child { border-bottom: none; }
     .review-q-num { font-size: 15px; font-weight: 600; color: var(--ink-soft, #4a4640); margin-right: 8px; white-space: nowrap; }
@@ -102,7 +102,7 @@
       </div>
 
       <div class="progress-container" id="progressContainer">
-        <div style="flex:1;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;position:relative;">
+        <div style="flex:1;height:4px;background:rgba(255,255,255,0.5);border-radius:2px;position:relative;">
           <div class="progress-bar" id="progressBar" style="position:absolute;top:0;left:0;height:100%;border-radius:2px;"></div>
         </div>
         <span class="progress-text" id="progressText">0 of <%= questions.length %></span>
@@ -185,7 +185,7 @@
 
     <div id="reviewPhase" class="review-section">
       <div class="assessment-header" style="text-align:center;">
-        <p class="intro-label">REVIEW YOUR RESPONSES</p>
+        <p class="intro-label" style="color:var(--ink-soft);">REVIEW YOUR RESPONSES</p>
         <h1 class="assessment-title">Assessment Summary</h1>
         <p class="assessment-desc" style="max-width:640px;margin:0 auto;">Please review your responses below. If you need to make changes, click "Edit Responses" to go back.</p>
       </div>
@@ -312,7 +312,7 @@
         const qText = card.dataset.questionText || '';
         let answer = answers[qId];
         const sLabels = card.querySelectorAll('.slider-label-abs');
-        if (sLabels.length > 0 && !isNaN(answer)) { const lbl = sLabels[parseInt(answer) - 1]; if (lbl) answer = answer + ' — ' + lbl.textContent.trim(); }
+        if (sLabels.length > 0 && !isNaN(answer)) { const lbl = sLabels[parseInt(answer) - 1]; if (lbl) answer = lbl.textContent.trim(); }
         if (Array.isArray(answer)) answer = answer.join(', ');
         if (!pillars[pillar]) pillars[pillar] = [];
         pillars[pillar].push({ qNum, qText, answer });
